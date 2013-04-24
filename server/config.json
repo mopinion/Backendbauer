@@ -1,0 +1,58 @@
+{"object":
+	{	
+		"mysql":
+		{
+			"servers":[
+				{
+					"domain":"localhost",
+					"port":8888,
+					"host":"localhost:3306",
+					"user":"my_username",
+					"pass":"my_password",
+					"db":"my_database",
+					"table":"my_table",
+					"dateField":"date",
+					"standardFilter":[
+						{
+							"active":1
+						}
+					],
+					"maxItems":30
+				}
+			]
+		},
+		"xvars": [
+			{
+				"id":1,
+				"name":"Date",
+				"fieldName":"date",
+				"type":"nominal",
+				"values":[
+					{
+						"input":"2013-08-06",
+						"output":"August 6 2013"
+					}
+				],
+				"join":[
+					{
+						"table":"my_table2",
+						"on": 
+							{
+								"left":"my_table.table2_id",
+								"right":"my_table2.id"
+							},
+						"value":"my_table2.value"
+					}
+				]
+			}
+		],
+		"yvars": [
+			{
+				"id":1,
+				"name":"Rating",
+				"fieldName":"rating",
+				"type":"ratio"
+			}
+		]
+	}
+}

@@ -38,6 +38,11 @@ To start and stop
 `sudo service backendbauer start`  
 `sudo service backendbauer stop`
 
+### Try
+`sudo service backendbauer start`   
+Go to   
+`http://localhost:8888/chart`
+
 ## API
 
 Endpoint:  
@@ -53,7 +58,9 @@ The API has a number of variables in order to get the right data in json format.
 - filter: a custom filter that is used to make the query.
 Filters can be added to narrow the query down in the following manner:  
 `|[field]:[value]` translates to `AND [field] = "[value]"`  
-`|[field]![value]` translates to `AND [field] <> "[value]"` 
+`|[field]![value]` translates to `AND [field] <> "[value]"`  
+example:  
+`filter=field1:right_value|field2!wrong_value`  
 - chart_type (optional): `line` or `pie`, etc. The response will send the type back. This can be used in some cases.
 - series (optional): `0/1` sometimes the ajax js code differs when a request is a series or a chart. The response returns this value.
 - jsonp: If `true` and a callback function is specified, the response will add the callback function (needed for jsonp crossdomain/port calls)
@@ -78,24 +85,26 @@ The server responds in json format, with the following fields:
 ```json
 {
 	"categories": [
-		"2012-10-01 00:00:00"
-		"2012-10-02 00:00:00"
-		"2012-10-03 00:00:00"
-		"2012-10-04 00:00:00"
-		"2012-10-05 00:00:00"
+		"2012-10-01"
+		"2012-10-02"
+		"2012-10-03"
+		"2012-10-04"
+		"2012-10-05"
 	],
 	"data": [
-		["2012-10-01 00:00:00",6]
-		["2012-10-02 00:00:00",5.3]
-		["2012-10-03 00:00:00",5.8]
-		["2012-10-04 00:00:00",5.6]
-		["2012-10-05 00:00:00",4.8]
+		["2012-10-01",6]
+		["2012-10-02",5.3]
+		["2012-10-03",5.8]
+		["2012-10-04",5.6]
+		["2012-10-05",4.8]
 	],
-	"x_field_name":"Group",
+	"x_field_name":"Date",
 	"x_labels":true,
 	"y_field_name":"Rating over time average"
 }
 ```
 
-
+## Future development
+- more filters such as OR and LIKE
+- other databases (such as MongoDB)
 	
