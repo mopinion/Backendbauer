@@ -75,7 +75,7 @@ The server responds in json format, with the following fields:
 
 ### Example response
 
-`{
+```{
 	"categories": [
 		"2012-10-01 00:00:00"
 		"2012-10-02 00:00:00"
@@ -93,7 +93,7 @@ The server responds in json format, with the following fields:
 	"x_field_name":"Group",
 	"x_labels":true,
 	"y_field_name":"Rating over time average"
-}`
+}```
 
 
 	
