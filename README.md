@@ -1,16 +1,16 @@
 Backendbauer
 ============
 
-# What it is
+## What it is
 
 Backendbauer is a backend server with REST API for generating json data for frontend js charts.
 It is written in Go and used by Mopinion in production.
 
-## Highcharts
+### Highcharts
 The charts library is Highcharts JS.
 http://www.highcharts.com/
 
-# How it works
+## How it works
 
 Only two files are needed to get Backendbauer working:
 - server/server.go
