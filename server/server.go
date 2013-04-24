@@ -108,9 +108,11 @@ func main() {
 	bb := new(Backendbauer)
 	// get path
 	if runtime.GOOS == "linux" {
-		bb.path = "/var/www/backendbauer/"
+		// production path
+		bb.path = "/server/path/to/backendbauer/server/"
 	} else {
-		bb.path = "/conceptables/backendbauer/go/"
+		// local test path
+		bb.path = "/local/path/to/backendbauer/server/"
 	}
 	if bb.path == "" {
 		_, filename, _, _ := runtime.Caller(1)
@@ -122,23 +124,25 @@ func main() {
 		}
 		bb.path = path_str
 	}
-	// http server
+	// http server root
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "Computer says no")
 	})
-
+	// data location
 	http.HandleFunc("/data", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
 		w.Header().Set("Content-Type", "application/x-javascript")
 		bb.data(w, r)
 	})
+	// test chart location
 	http.HandleFunc("/chart", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
 		w.Header().Set("Content-Type", "text/html")
 		bb.chart(w, r)
 	})
+	// js file location
 	http.HandleFunc("/backendbauer.js", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
@@ -154,10 +158,8 @@ func (bb *Backendbauer) settings() jsonobject {
 	if err != nil {
 		panic(err)
 	}
-	//fmt.Printf("%s\n", string(file))
 	var jsontype jsonobject
 	json.Unmarshal(file, &jsontype)
-	//fmt.Printf("Results: %v\n", jsontype)
 	return jsontype
 }
 
@@ -198,6 +200,7 @@ func (bb *Backendbauer) js(w http.ResponseWriter, r *http.Request) string {
 	file, err := os.Open(bb.path + "backendbauer.js")
 	if err != nil {
 		// error
+		fmt.Println("error in showing backendbauer.js")
 	}
 	reader := bufio.NewReader(file)
 	buffer := bytes.NewBuffer(make([]byte, 0))
@@ -228,7 +231,6 @@ func (bb *Backendbauer) data(w http.ResponseWriter, r *http.Request) int {
 	// check referer domain 
 	referer := r.Referer()
 	bb.referer = referer
-	//remote_addr := r.RemoteAddr
 	// server settings
 	bb.serverSettings(referer)
 	fmt.Println("referer: ", referer)
@@ -266,8 +268,6 @@ func (bb *Backendbauer) data(w http.ResponseWriter, r *http.Request) int {
 	if to_date == "" {
 		to_date = "2025-12-31"
 	}
-	//fmt.Fprint(w, "data_field_id: ", myval)
-	//data_field_id, _ := strconv.Atoi(y)
 	var categories, data, output, group1 string
 	categories = "["
 	data = "["
@@ -288,7 +288,6 @@ func (bb *Backendbauer) data(w http.ResponseWriter, r *http.Request) int {
 		} else {
 			group1 = group
 		}
-		//fmt.Fprint(w, "\n", group, ": ", value)
 		// check for mapped value
 		group1 = bb.mapValue(group1, x_field)
 		if i == 0 {
@@ -347,9 +346,7 @@ func (bb *Backendbauer) mapValue(input string, x_field int) string {
 }
 
 func (bb *Backendbauer) DB() mysql.Conn {
-	//fmt.Println("host: ", bb.mysql_host)
 	db := mysql.New("tcp", "", bb.mysql_host, bb.mysql_user, bb.mysql_pass, bb.mysql_db)
-
 	err := db.Connect()
 	if err != nil {
 		panic(err)
@@ -359,9 +356,6 @@ func (bb *Backendbauer) DB() mysql.Conn {
 
 func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_date string, avg int, filter string, order string, limit string, role_id int) ([]mysql.Row, varsType, varsType) {
 	db := bb.DB()
-	// vars
-	//y_field_str := strconv.Itoa(y_field)
-	//x_field_str := strconv.Itoa(x_field)
 	// get settings for fields
 	y_field_settings := bb.fieldSettings("y", y_field)
 	x_field_settings := bb.fieldSettings("x", x_field)
@@ -490,7 +484,7 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 	} else {
 		limit_query = `LIMIT 0,` + limit
 	}
-	// role query (for EFM)
+	// role query
 	// role_id
 	var role_query string
 	if role_id == 0 {
@@ -519,7 +513,6 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 	  ` + order_query + `
 	  ` + limit_query + `
 	 `
-	fmt.Println("-->", query, "<--")
 	rows, _, err := db.Query(query)
 	bb.query = query
 	if err != nil {
@@ -533,7 +526,6 @@ func (bb *Backendbauer) fieldSettings(field_type string, field_id int) varsType 
 	var output varsType
 	if field_type == "y" {
 		field_settings := settings.Object.Yvars
-		//fmt.Println(field_settings)
 		for _, field := range field_settings {
 			if field.Id == field_id {
 				output = field
@@ -541,7 +533,6 @@ func (bb *Backendbauer) fieldSettings(field_type string, field_id int) varsType 
 		}
 	} else if field_type == "x" {
 		field_settings := settings.Object.Xvars
-		//fmt.Println(field_settings)
 		for _, field := range field_settings {
 			if field.Id == field_id {
 				output = field
@@ -561,8 +552,6 @@ func (bb *Backendbauer) getRolesTree(parent_id int, children []int) []int {
 	if err != nil {
 		panic(err)
 	}
-	//fmt.Println("roles")
-	//fmt.Println(children)
 	for _, row := range rows {
 		child_id := row.Int(0)
 		//children[i] = child_id
@@ -614,50 +603,23 @@ func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 								'series':[
 									{
 										'y':1,
-										'name':'Aantal items',
-										'avg':0,
-										'filters':[
-											{
-												'field':'fv.data_field_id',
-												'value':391
-											},
-											{
-												'field':'fv2.data_field_id',
-												'value':392
-											},
-											{
-												'field':'fv3.data_field_id',
-												'value':388
-											},
-											{
-												'field':'fv3.value',
-												'value':12
-											}
-										]
+										'name':'Date',
+										'avg':0
 									},
 									{
 										'y':1,
-										'avg':0,
+										'avg':1,
 										'filters':[
 											{
-												'field':'fv.data_field_id',
-												'value':391
-											},
-											{
-												'field':'fv2.data_field_id',
-												'value':392
-											},
-											{
-												'field':'fv3.data_field_id',
-												'value':388
+												'field':'my_table.rating',
+												'not':0
 											}
 										]
 									}
 								],
 								'x':1,
 								'type':'area',
-								'title':'Testing',
-								//'role':217
+								'title':'Rating'
 							}
 						]
 					};
