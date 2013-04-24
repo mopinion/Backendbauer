@@ -1,0 +1,55 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          backendbauer
+# Required-Start:    $all
+# Required-Stop:     $all
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: starts the backendbauer server
+# Description:       starts backendbauer using start-stop-daemon
+### END INIT INFO
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+BIN=/usr/sbin/backendbauer
+#BIN=/var/www/backendbauer/server
+PIDFILE=/var/run/backendbauer.pid
+#USER=nobody
+#GROUP=nogroup
+
+HOST=backendbauer.com
+HTTP=:8888
+FILE=/var/spool/goto/store.gob
+PASS=password
+BINARGS="-host=$HOST -http=$HTTP -file=$FILE -pass=$PASS"
+
+test -f $BIN || exit 0
+set -e
+case "$1" in
+  start)
+    echo -n "Starting backendbauer server: "
+    start-stop-daemon --start --chuid $USER:$GROUP \
+        --make-pidfile --background --pidfile $PIDFILE \
+        --exec $BIN -- $BINARGS
+    echo "start backendbauer."
+    ;;
+  stop)
+    echo -n "Starting backendbauer server: "
+    start-stop-daemon --stop --quiet --pidfile $PIDFILE --exec $BIN
+    rm -f $PIDFILE
+    echo "stop backendbauer."
+    ;;
+  restart)
+    echo -n "Restarting backendbauer server: "
+    $0 stop
+    sleep 1
+    $0 start
+    echo "restart backendbauer."
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}" >&2
+    exit 1
+    ;;
+esac
+exit 0
