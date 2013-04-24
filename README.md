@@ -107,4 +107,5 @@ The server responds in json format, with the following fields:
 ## Future development
 - more filters such as OR and LIKE
 - other databases (such as MongoDB)
+- API to easily add data to make fast charts of any process imaginable
 	
