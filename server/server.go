@@ -109,10 +109,10 @@ func main() {
 	// get path
 	if runtime.GOOS == "linux" {
 		// production path
-		bb.path = "/server/path/to/backendbauer/server/"
+		bb.path = "./"
 	} else {
 		// local test path
-		bb.path = "/local/path/to/backendbauer/server/"
+		bb.path = "./"
 	}
 	if bb.path == "" {
 		_, filename, _, _ := runtime.Caller(1)
@@ -421,6 +421,7 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 	}
 	// standard filters
 	standardFilters := bb.standardFilter
+	fmt.Println("standardFilters: ", standardFilters)
 	standard_filter_query := ""
 	for _, standardFilter := range standardFilters {
 		// table given?
@@ -514,6 +515,7 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 	  ` + limit_query + `
 	 `
 	rows, _, err := db.Query(query)
+	fmt.Println("query: ", query)
 	bb.query = query
 	if err != nil {
 		panic(err)
@@ -603,11 +605,6 @@ func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 								'series':[
 									{
 										'y':1,
-										'name':'Date',
-										'avg':0
-									},
-									{
-										'y':1,
 										'avg':1,
 										'filters':[
 											{
@@ -639,11 +636,11 @@ func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 					</select>
 				</div>
 				<div style="float:left;padding:10px;">
-					Van
-					<input type="text" value="01-01-2012" id="from" />
+					From
+					<input type="text" value="01-04-2013" id="from" />
 					<br />
-					Tot
-					<input type="text" value="31-12-2012" id="to" />
+					To
+					<input type="text" value="30-04-2013" id="to" />
 				</div>
 			</div>
 			<div style:"width:100%;overflow:hidden;">

@@ -14,7 +14,8 @@
 					"dateField":"date",
 					"standardFilter":[
 						{
-							"active":1
+							"field":"active",
+							"value":"1"
 						}
 					],
 					"maxItems":30
@@ -32,7 +33,15 @@
 						"input":"2013-08-06",
 						"output":"August 6 2013"
 					}
-				],
+				]
+			}
+		],
+		"yvars": [
+			{
+				"id":1,
+				"name":"Rating",
+				"fieldName":"rating",
+				"type":"ratio",
 				"join":[
 					{
 						"table":"my_table2",
@@ -44,14 +53,6 @@
 						"value":"my_table2.value"
 					}
 				]
-			}
-		],
-		"yvars": [
-			{
-				"id":1,
-				"name":"Rating",
-				"fieldName":"rating",
-				"type":"ratio"
 			}
 		]
 	}
