@@ -4,13 +4,14 @@ Backendbauer
 ## What it is
 
 Backendbauer is a backend server with REST API for generating json data for frontend js charts.
-It is written in Go and used by Mopinion in production.
+It is written in Go and used by Mopinion.
 
 ## What it needs
 * The [Go](http://golang.org) language
 * The charts library from Highcharts JS.
 http://www.highcharts.com/
 * [MyMySQL] (http://github.com/ziutek/mymysql) for Go
+* [Go http auth](https://github.com/abbot/go-http-auth)
 
 ## How it works
 
@@ -18,7 +19,7 @@ Only two files are needed to get Backendbauer working:
 - server/server.go
 - server/config.json
 
-For testing you can also use backendbauer.js
+For testing you can also use server/backendbauer.js
 
 Server.go is the source code. In config.json you can set MySQL databases with custom tables and fields.
 All settings are based on the url from which the API call is made, the referer.
@@ -38,10 +39,14 @@ To start and stop
 `sudo service backendbauer start`  
 `sudo service backendbauer stop`
 
+### MySQL
+To test the example execute the `sql/my_database.sql` file on your local MySQL server.
+Set the proper username and password in config.json
+
 ### Try
 `sudo service backendbauer start`   
 Go to   
-`http://localhost:8888/chart`
+`https://localhost:8888/chart`
 
 ## API
 

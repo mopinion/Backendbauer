@@ -33,17 +33,6 @@
 						"input":"2013-08-06",
 						"output":"August 6 2013"
 					}
-				],
-				"join":[
-					{
-						"table":"my_table2",
-						"on": 
-							{
-								"left":"my_table.table2_id",
-								"right":"my_table2.id"
-							},
-						"value":"my_table2.value"
-					}
 				]
 			},
 			{
