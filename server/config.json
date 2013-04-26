@@ -33,15 +33,7 @@
 						"input":"2013-08-06",
 						"output":"August 6 2013"
 					}
-				]
-			}
-		],
-		"yvars": [
-			{
-				"id":1,
-				"name":"Rating",
-				"fieldName":"rating",
-				"type":"ratio",
+				],
 				"join":[
 					{
 						"table":"my_table2",
@@ -53,6 +45,31 @@
 						"value":"my_table2.value"
 					}
 				]
+			},
+			{
+				"id":2,
+				"name":"Group",
+				"fieldName":"my_table2.value",
+				"type":"nominal",
+				"join":[
+					{
+						"table":"my_table2",
+						"on": 
+							{
+								"left":"my_table.table2_id",
+								"right":"my_table2.id"
+							},
+						"value":"my_table2.value"
+					}
+				]
+			}
+		],
+		"yvars": [
+			{
+				"id":1,
+				"name":"Rating",
+				"fieldName":"rating",
+				"type":"ratio"
 			}
 		]
 	}

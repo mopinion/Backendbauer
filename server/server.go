@@ -364,8 +364,6 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 	var table = regexp.MustCompile("\\.")
 	// filter for y var
 	var y_field_filter string
-	fmt.Println("y_field_settings.FieldName: ", y_field_settings.FieldName)
-	fmt.Println("bb.mysql_table: ", bb.mysql_table)
 	if y_field_settings.Type == "ratio" {
 		if len(table.FindAllString(y_field_settings.FieldName, -1)) == 0 && len(table.FindAllString(bb.mysql_table, -1)) == 0 {
 			y_field_filter = `WHERE ` + bb.mysql_table + `.` + y_field_settings.FieldName + ` > 0`
@@ -395,7 +393,6 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 	// join tables
 	var join_query string
 	join := x_field_settings.Join
-	fmt.Println("join: ", join)
 	for _, j := range join {
 		join_table := j.Table
 		join_on_left := j.On.Left
@@ -405,7 +402,7 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 			field_select = join_value
 		}
 		if join_table != "" && join_on_left != "" && join_on_right != "" {
-			if len(table.FindAllString(y_field_settings.FieldName, -1)) == 0 {
+			if len(table.FindAllString(join_on_right, -1)) == 0 {
 				join_query += ` JOIN ` + join_table + ` ON ` + join_table + `.` + join_on_right + ` = ` + join_on_left
 			} else {
 				join_query += ` JOIN ` + join_table + ` ON ` + join_on_right + ` = ` + join_on_left
@@ -421,7 +418,6 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 	}
 	// standard filters
 	standardFilters := bb.standardFilter
-	fmt.Println("standardFilters: ", standardFilters)
 	standard_filter_query := ""
 	for _, standardFilter := range standardFilters {
 		// table given?
@@ -609,7 +605,7 @@ func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 										'filters':[
 											{
 												'field':'my_table.rating',
-												'not':0
+												'not':11
 											}
 										]
 									}
@@ -617,6 +613,24 @@ func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 								'x':1,
 								'type':'area',
 								'title':'Rating'
+							},
+							{
+								'id':2,
+								'series':[
+									{
+										'y':1,
+										'avg':0,
+										'filters':[
+											{
+												'field':'my_table.rating',
+												'not':11
+											}
+										]
+									}
+								],
+								'x':2,
+								'type':'bar',
+								'title':'Groups'
 							}
 						]
 					};
@@ -632,7 +646,8 @@ func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 			<div style:"width:100%;overflow:hidden;">
 				<div style="float:left;padding:10px;">
 					<select id="loadChart" onchange="Backendbauer.render(this.value);">
-						<option value="1">Test</value>
+						<option value="1">Rating over time</value>
+						<option value="2">Groups</value>
 					</select>
 				</div>
 				<div style="float:left;padding:10px;">
