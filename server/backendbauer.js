@@ -27,7 +27,9 @@ var Backendbauer = function() {
 			to_field = v.to_field;
 			debug = v.debug;
 			jsonp = v.jsonp;
-			combined = v.combined;
+			if (typeof v.combined != "undefined") {
+				combined = v.combined;
+			}
 			// loader
 			Backendbauer.loader();
 			// load on start
