@@ -431,28 +431,30 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 	filter_slices := strings.Split(filter, "|")
 	extra_filter := ""
 	var fs_field, fs_value, fs_sign string
-	for _, filter_slice := range filter_slices {
-		// AND
-		var colon = regexp.MustCompile(":")
-		if len(colon.FindAllString(filter_slice, -1)) > 0 {
-			fs := strings.Split(filter_slice, ":")
-			fs_field = fs[0]
-			fs_value = fs[1]
-			fs_sign = `=`
-		}
-		// AND NOT
-		var exclam = regexp.MustCompile("!")
-		if len(exclam.FindAllString(filter_slice, -1)) > 0 {
-			fs := strings.Split(filter_slice, "!")
-			fs_field = fs[0]
-			fs_value = fs[1]
-			fs_sign = `<>`
-		}
-		// table given?
-		if len(table.FindAllString(fs_field, -1)) > 0 {
-			extra_filter += ` AND ` + fs_field + ` ` + fs_sign + ` "` + fs_value + `"`
-		} else {
-			extra_filter += ` AND ` + bb.mysql_table + `.` + fs_field + ` ` + fs_sign + ` "` + fs_value + `"`
+	if len(filter_slices) > 1 {
+		for _, filter_slice := range filter_slices {
+			// AND
+			var colon = regexp.MustCompile(":")
+			if len(colon.FindAllString(filter_slice, -1)) > 0 {
+				fs := strings.Split(filter_slice, ":")
+				fs_field = fs[0]
+				fs_value = fs[1]
+				fs_sign = `=`
+			}
+			// AND NOT
+			var exclam = regexp.MustCompile("!")
+			if len(exclam.FindAllString(filter_slice, -1)) > 0 {
+				fs := strings.Split(filter_slice, "!")
+				fs_field = fs[0]
+				fs_value = fs[1]
+				fs_sign = `<>`
+			}
+			// table given?
+			if len(table.FindAllString(fs_field, -1)) > 0 {
+				extra_filter += ` AND ` + fs_field + ` ` + fs_sign + ` "` + fs_value + `"`
+			} else {
+				extra_filter += ` AND ` + bb.mysql_table + `.` + fs_field + ` ` + fs_sign + ` "` + fs_value + `"`
+			}
 		}
 	}
 	// date
