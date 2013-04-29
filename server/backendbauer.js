@@ -50,7 +50,9 @@ var Backendbauer = function() {
 					var series_last = series.length - 1;
 					if (standard_filter == undefined)  {
 						standard_filter = '';
-					} 
+					} else {
+						standard_filter = standard_filter + '|';
+					}
 					if (typeof charts[i]['role'] == "undefined") {
 						role = 0;
 					} else {
