@@ -48,18 +48,16 @@ var Backendbauer = function() {
 					var order = charts[i]['order'];
 					var limit = charts[i]['limit'];
 					var series_last = series.length - 1;
-					if (standard_filter != undefined)  {
-						var set_filters = standard_filter;
-					} else {
-						var set_filters = '';
-					}
+					if (standard_filter == undefined)  {
+						standard_filter = '';
+					} 
 					if (typeof charts[i]['role'] == "undefined") {
 						role = 0;
 					} else {
 						role = charts[i]['role'];
 					}
 					for (j in series) {
-						set_filters = ''
+						set_filters = standard_filter
 						var y = series[j]['y'];
 						var avg = series[j]['avg'];
 						var filters = series[j]['filters'];
