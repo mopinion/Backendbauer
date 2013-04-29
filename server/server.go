@@ -431,7 +431,7 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 	filter_slices := strings.Split(filter, "|")
 	extra_filter := ""
 	var fs_field, fs_value, fs_sign string
-	if len(filter_slices) > 1 {
+	if len(filter_slices[0]) > 0 {
 		for _, filter_slice := range filter_slices {
 			// AND
 			var colon = regexp.MustCompile(":")
