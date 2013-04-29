@@ -200,7 +200,7 @@ func (bb *Backendbauer) js(w http.ResponseWriter, r *http.Request) string {
 	file, err := os.Open(bb.path + "backendbauer.js")
 	if err != nil {
 		// error
-		fmt.Println("error in showing backendbauer.js")
+		fmt.Println("error in showing backendbauer.js: ", err)
 	}
 	reader := bufio.NewReader(file)
 	buffer := bytes.NewBuffer(make([]byte, 0))
