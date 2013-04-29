@@ -292,6 +292,9 @@ var Backendbauer = function() {
 		// form data querystring
 		query:function() {
 			var query = 'x='+x+'&y='+y+'&from_date='+from_date+'&to_date='+to_date+'&avg='+avg+'&filter='+filter+'&chart_type='+chart_type+'&series='+series+'&jsonp='+jsonp+'&order='+order+'&limit='+limit+'&role='+role+'&callback=Backendbauer.place&combined='+combined+'&name='+name;
+			if (debug == true) {
+				Backendbauer.log(query);
+			}
 			return query;
 		},
 		// get json from server with ajax
