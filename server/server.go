@@ -262,12 +262,6 @@ func (bb *Backendbauer) data(w http.ResponseWriter, r *http.Request) int {
 	if x_field == 0 {
 		x_field = 1
 	}
-	if from_date == "" {
-		from_date = "2012-01-01"
-	}
-	if to_date == "" {
-		to_date = "2025-12-31"
-	}
 	var categories, data, output, group1 string
 	categories = "["
 	data = "["
@@ -458,14 +452,21 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 		}
 	}
 	// date
-	// table given?
-	var date_query string
+	date_query := ""
 	if len(table.FindAllString(fs_field, -1)) > 0 {
-		date_query = `AND ` + bb.mysql_date_field + ` >= "` + from_date + ` 0:00:00"
-	  AND ` + bb.mysql_date_field + ` <= "` + to_date + ` 23:59:59"`
+		if from_date != "" {
+			date_query += `AND ` + bb.mysql_date_field + ` >= "` + from_date + ` 0:00:00"`
+		}
+		if to_date != "" {
+			date_query += ` AND ` + bb.mysql_date_field + ` <= "` + to_date + ` 23:59:59"`
+		}
 	} else {
-		date_query = `AND ` + bb.mysql_table + `.` + bb.mysql_date_field + ` >= "` + from_date + ` 0:00:00"
-	  AND ` + bb.mysql_table + `.` + bb.mysql_date_field + ` <= "` + to_date + ` 23:59:59"`
+		if from_date != "" {
+			date_query += `AND ` + bb.mysql_table + `.` + bb.mysql_date_field + ` >= "` + from_date + ` 0:00:00"`
+		}
+		if to_date != "" {
+			date_query += ` AND ` + bb.mysql_table + `.` + bb.mysql_date_field + ` <= "` + to_date + ` 23:59:59"`
+		}
 	}
 	// order
 	var order_query string
