@@ -387,6 +387,7 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 	// join tables
 	var join_query string
 	join := x_field_settings.Join
+	fmt.Println("join: ", join)
 	for _, j := range join {
 		join_table := j.Table
 		join_on_left := j.On.Left
