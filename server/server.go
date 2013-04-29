@@ -598,6 +598,7 @@ func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 						'debug':true,
 						'jsonp':false,
 						'combined':true,
+						'filter':'my_table.rating!12',
 						'charts': [
 							{
 								'id':1,

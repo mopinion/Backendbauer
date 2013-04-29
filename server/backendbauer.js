@@ -19,7 +19,7 @@ var Backendbauer = function() {
 		// load frontend
 		load:function(v) {
 			// load vars
-			standard_filter = v.filter;
+			standard_filter = v.filter+'|';
 			charts = v.charts;
 			div = v.container;
 			server_url = v.server;
@@ -50,7 +50,7 @@ var Backendbauer = function() {
 					var series_last = series.length - 1;
 					if (standard_filter == undefined)  {
 						standard_filter = '';
-					} 
+					}
 					if (typeof charts[i]['role'] == "undefined") {
 						role = 0;
 					} else {
