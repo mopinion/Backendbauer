@@ -10,6 +10,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	auth "github.com/abbot/go-http-auth"
 	"github.com/ziutek/mymysql/mysql"
 	_ "github.com/ziutek/mymysql/native"
 	"io"
@@ -129,12 +130,8 @@ func main() {
 		fmt.Fprint(w, "Computer says no")
 	})
 	// data location
-	http.HandleFunc("/data", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-		w.Header().Set("Content-Type", "application/x-javascript")
-		bb.data(w, r)
-	})
+	authenticator := auth.NewBasicAuthenticator("Please, log in", Secret)
+	http.HandleFunc("/data", authenticator.Wrap(data))
 	// test chart location
 	http.HandleFunc("/chart", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -150,6 +147,15 @@ func main() {
 		bb.js(w, r)
 	})
 	http.ListenAndServe(":8888", nil)
+}
+
+// authentication 
+func Secret(user, realm string) string {
+	if user == "franz" {
+		// password is "hello"
+		return "$1$dlPL2MqE$oQmn16q49SqdmhenQuNgs1"
+	}
+	return ""
 }
 
 // load json
@@ -226,7 +232,11 @@ func (bb *Backendbauer) js(w http.ResponseWriter, r *http.Request) string {
 	return text
 }
 
-func (bb *Backendbauer) data(w http.ResponseWriter, r *http.Request) int {
+func data(w http.ResponseWriter, r *auth.AuthenticatedRequest) {
+	bb := new(Backendbauer)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+	w.Header().Set("Content-Type", "application/x-javascript")
 	fmt.Println("Backendbauer server running")
 	// check referer domain 
 	referer := r.Referer()
@@ -238,7 +248,6 @@ func (bb *Backendbauer) data(w http.ResponseWriter, r *http.Request) int {
 	var needed = regexp.MustCompile(bb.domain)
 	if len(needed.FindAllString(referer, -1)) == 0 || referer == "" {
 		fmt.Fprint(w, "computer says no")
-		return 1
 	}
 	// querystring input
 	y_field, _ := strconv.Atoi(r.FormValue("y"))
@@ -319,7 +328,6 @@ func (bb *Backendbauer) data(w http.ResponseWriter, r *http.Request) int {
 		output = callback + `(` + output + `);`
 	}
 	fmt.Fprint(w, output)
-	return 0
 }
 
 func (bb *Backendbauer) mapValue(input string, x_field int) string {
@@ -592,7 +600,7 @@ func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 				(function() {
 					vars = {
 						'container':'backendbauer_chart',
-						'server':'localhost:8888',
+						'server':'franz:hello@localhost:8888',
 						'from_field':'from',
 						'to_field':'to',
 						'debug':true,
