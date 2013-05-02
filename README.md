@@ -46,7 +46,9 @@ Set the proper username and password in config.json
 ### Try
 `sudo service backendbauer start`   
 Go to   
-`https://localhost:8888/chart`
+`http://franz:jawohl@localhost:8888/chart`  
+(Always use `https://` on your live server.)
+
 
 ## API
 
