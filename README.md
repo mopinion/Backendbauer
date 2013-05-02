@@ -46,14 +46,13 @@ Set the proper username and password in config.json
 ### Try
 `sudo service backendbauer start`   
 Go to   
-`http://franz:jawohl@localhost:8888/chart`  
-(Always use `https://` on your live server.)
+`http://localhost:8888/chart`
 
 
 ## API
 
 Endpoint:  
-`http://[host name]:[port]/data`  
+`https://[username]:[password]@[host name]:[port]/data`  
 
 The API has a number of variables in order to get the right data in json format.
 
