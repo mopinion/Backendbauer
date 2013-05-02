@@ -2,6 +2,7 @@
 Backendbauer
 Floris Snuif
 Mopinion BV Rotterdam
+mopinionlabs.com
 */
 package main
 
@@ -22,12 +23,6 @@ import (
 	"strconv"
 	"strings"
 )
-
-/*
-type Backendbauerer interface {
-	data()
-}
-*/
 
 type Backendbauer struct {
 	domain           string
@@ -52,9 +47,15 @@ type jsonobject struct {
 }
 
 type ObjectType struct {
+	Auth  []authType
 	Mysql MysqlType
 	Xvars []varsType
 	Yvars []varsType
+}
+
+type authType struct {
+	User     string
+	Password string
 }
 
 type MysqlType struct {
@@ -130,7 +131,7 @@ func main() {
 		fmt.Fprint(w, "Computer says no")
 	})
 	// data location
-	authenticator := auth.NewBasicAuthenticator("Please, log in", Secret)
+	authenticator := auth.NewBasicAuthenticator("Please, log in to use Backendbauer", password)
 	http.HandleFunc("/data", authenticator.Wrap(data))
 	// test chart location
 	http.HandleFunc("/chart", func(w http.ResponseWriter, r *http.Request) {
@@ -150,10 +151,14 @@ func main() {
 }
 
 // authentication 
-func Secret(user, realm string) string {
-	if user == "franz" {
-		// password is "hello"
-		return "$1$dlPL2MqE$oQmn16q49SqdmhenQuNgs1"
+func password(user, realm string) string {
+	bb := new(Backendbauer)
+	settings := bb.settings()
+	auth := settings.Object.Auth
+	for _, pair := range auth {
+		if pair.User == user {
+			return pair.Password
+		}
 	}
 	return ""
 }
@@ -600,7 +605,7 @@ func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 				(function() {
 					vars = {
 						'container':'backendbauer_chart',
-						'server':'franz:hello@localhost:8888',
+						'server':'franz:jawohl@localhost:8888',
 						'from_field':'from',
 						'to_field':'to',
 						'debug':true,

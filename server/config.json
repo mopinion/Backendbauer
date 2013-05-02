@@ -1,5 +1,15 @@
 {"object":
 	{	
+		"auth": [
+			{
+				"user":"franz",
+				"password":"$apr1$8kc64IUh$JT/SNaE6wYn4leKiEbp.R."
+			},
+			{
+				"user":"hans",
+				"password":"$apr1$RAUFQbKW$WZZxFisLk111oepcZ5EFl0"
+			}
+		],
 		"mysql":
 		{
 			"servers":[
