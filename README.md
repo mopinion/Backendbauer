@@ -37,7 +37,9 @@ copy service file to /etc/init.d
 `sudo chmod 755 /etc/init.d/backendbauer`  
 To start and stop  
 `sudo service backendbauer start`  
-`sudo service backendbauer stop`
+`sudo service backendbauer stop`  
+or  
+`nohup [backendbauer dir]/server/server &`
 
 ### MySQL
 To test the example execute the `sql/my_database.sql` file on your local MySQL server.
