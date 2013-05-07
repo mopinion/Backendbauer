@@ -251,7 +251,7 @@ func data(w http.ResponseWriter, r *auth.AuthenticatedRequest) {
 	fmt.Println("referer: ", referer)
 	fmt.Println("domain: ", bb.domain)
 	var needed = regexp.MustCompile(bb.domain)
-	if len(needed.FindAllString(referer, -1)) == 0 || referer == "" {
+	if len(needed.FindAllString(referer, -1)) == 0 {
 		fmt.Fprint(w, "computer says no")
 	}
 	// querystring input
@@ -371,7 +371,13 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 	var table = regexp.MustCompile("\\.")
 	// filter for y var
 	var y_field_filter string
-	if y_field_settings.Type == "ratio" {
+	if avg == 2 {
+		if len(table.FindAllString(y_field_settings.FieldName, -1)) == 0 && len(table.FindAllString(bb.mysql_table, -1)) == 0 {
+			y_field_filter = `WHERE ` + bb.mysql_table + `.` + x_field_settings.FieldName + ` > 0`
+		} else {
+			y_field_filter = `WHERE ` + x_field_settings.FieldName + ` > 0`
+		}
+	} else if y_field_settings.Type == "ratio" {
 		if len(table.FindAllString(y_field_settings.FieldName, -1)) == 0 && len(table.FindAllString(bb.mysql_table, -1)) == 0 {
 			y_field_filter = `WHERE ` + bb.mysql_table + `.` + y_field_settings.FieldName + ` > 0`
 		} else {
@@ -420,6 +426,9 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 	var var1 string
 	if avg == 1 && y_field_settings.Type == "ratio" {
 		var1 = `AVG(` + y_field_settings.FieldName + `)`
+	} else if avg == 2 {
+		// percentage of total
+		var1 = `count(CASE WHEN ` + y_field_settings.FieldName + ` = 1 THEN 1 END) / count(*)`
 	} else {
 		var1 = `COUNT(` + y_field_settings.FieldName + `)`
 	}
@@ -648,6 +657,24 @@ func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 								'x':2,
 								'type':'bar',
 								'title':'Groups'
+							},
+							{
+								'id':3,
+								'series':[
+									{
+										'y':2,
+										'avg':2,
+										'filters':[
+											{
+												'field':'my_table.rating',
+												'not':11
+											}
+										]
+									}
+								],
+								'x':1,
+								'type':'line',
+								'title':'Percentage promoters'
 							}
 						]
 					};
@@ -665,6 +692,7 @@ func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 					<select id="loadChart" onchange="Backendbauer.render(this.value);">
 						<option value="1">Rating over time</value>
 						<option value="2">Groups</value>
+						<option value="3">Percentage</value>
 					</select>
 				</div>
 				<div style="float:left;padding:10px;">

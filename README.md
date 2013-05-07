@@ -62,7 +62,7 @@ The API has a number of variables in order to get the right data in json format.
 - y: data field id as configured in config.json
 - from_date: start date for query in `YYYY-MM-DD` format  
 - to_date: end date for query in `YYYY-MM-DD` format  
-- avg: is it the average value (only possible for numerical fields) or the count? `0/1`
+- avg: 1 -> count, 2 -> average or 3 -> percentage (of items that are 1 and not 0) `0/1/2`
 - filter: a custom filter that is used to make the query.
 Filters can be added to narrow the query down in the following manner:  
 `|[field]:[value]` translates to `AND [field] = "[value]"`  
