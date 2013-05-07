@@ -62,7 +62,7 @@ The API has a number of variables in order to get the right data in json format.
 - y: data field id as configured in config.json
 - from_date: start date for query in `YYYY-MM-DD` format  
 - to_date: end date for query in `YYYY-MM-DD` format  
-- avg: 1 -> count, 2 -> average or 3 -> percentage (of items that are 1 and not 0) `0/1/2`
+- avg: 0 -> count, 1 -> average or 2 -> percentage (of items that are 1 and not 0) `0/1/2`
 - filter: a custom filter that is used to make the query.
 Filters can be added to narrow the query down in the following manner:  
 `|[field]:[value]` translates to `AND [field] = "[value]"`  
@@ -77,6 +77,12 @@ example:
 - limit (optional): `[number]` for example `10` limits the result to 10 rows
 - combined (optional): when `true` the response will include the categories in the data `[['category1','data1']['category2']['data2']]` instead of `['data1','data2','data3']`. Easier to add series after a chart already exists
 - name (optional): the name of the y variable in the series. Response returns this name, so it can be used in js manipulation of the highchart object.
+
+### Example request
+
+```javascript
+http://franz:jawohl@localhost:8888/data?x=1&y=1&from_date=2013-04-01&to_date=2013-04-30&avg=1&filter=my_table.rating!12|my_table.rating!11&chart_type=area&series=0&jsonp=false&order=&limit=0&role=0&callback=Backendbauer.place&combined=true
+```
 
 ## Response
 
