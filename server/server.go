@@ -270,6 +270,7 @@ func data(w http.ResponseWriter, r *auth.AuthenticatedRequest) {
 	callback := r.FormValue("callback")
 	combined, _ := strconv.ParseBool(r.FormValue("combined"))
 	name := r.FormValue("name")
+	benchmark, _ := strconv.Atoi(r.FormValue("benchmark"))
 	if y_field == 0 {
 		y_field = 1
 	}
@@ -279,7 +280,7 @@ func data(w http.ResponseWriter, r *auth.AuthenticatedRequest) {
 	var categories, data, output, group1 string
 	categories = "["
 	data = "["
-	rows, y_field_settings, x_field_settings := bb.connect(y_field, x_field, from_date, to_date, avg, filter, order, limit, role_id)
+	rows, y_field_settings, x_field_settings := bb.connect(y_field, x_field, from_date, to_date, avg, filter, order, limit, role_id, benchmark)
 	for i, row := range rows {
 		// get values from fields
 		value := row.Str(1)
@@ -361,7 +362,7 @@ func (bb *Backendbauer) DB() mysql.Conn {
 	return db
 }
 
-func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_date string, avg int, filter string, order string, limit string, role_id int) ([]mysql.Row, varsType, varsType) {
+func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_date string, avg int, filter string, order string, limit string, role_id int, benchmark int) ([]mysql.Row, varsType, varsType) {
 	db := bb.DB()
 	// get settings for fields
 	y_field_settings := bb.fieldSettings("y", y_field)
@@ -424,11 +425,13 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 	}
 	// count or average?
 	var var1 string
-	if avg == 1 && y_field_settings.Type == "ratio" {
+	if benchmark != 0 {
+		var1 = `'` + strconv.Itoa(benchmark) + `'`
+	} else if avg == 1 && y_field_settings.Type == "ratio" {
 		var1 = `AVG(` + y_field_settings.FieldName + `)`
 	} else if avg == 2 {
 		// percentage of total
-		var1 = `count(CASE WHEN ` + y_field_settings.FieldName + ` = 1 THEN 1 END) / count(*)`
+		var1 = `count(CASE WHEN ` + y_field_settings.FieldName + ` = 1 THEN 1 END) / count(*) * 100`
 	} else {
 		var1 = `COUNT(` + y_field_settings.FieldName + `)`
 	}
@@ -625,6 +628,17 @@ func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 							{
 								'id':1,
 								'series':[
+									{
+										'y':1,
+										'avg':1,
+										'benchmark':6,
+										'filters':[
+											{
+												'field':'my_table.rating',
+												'not':11
+											}
+										]
+									},
 									{
 										'y':1,
 										'avg':1,

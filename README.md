@@ -77,10 +77,11 @@ example:
 - limit (optional): `[number]` for example `10` limits the result to 10 rows
 - combined (optional): when `true` the response will include the categories in the data `[['category1','data1']['category2']['data2']]` instead of `['data1','data2','data3']`. Easier to add series after a chart already exists
 - name (optional): the name of the y variable in the series. Response returns this name, so it can be used in js manipulation of the highchart object.
+- benchmark (optional): fixed value to set the y variable to, for benchmarking.
 
 ### Example request
 
-```javascript
+```html
 http://franz:jawohl@localhost:8888/data?x=1&y=1&from_date=2013-04-01&to_date=2013-04-30&avg=1&filter=my_table.rating!12|my_table.rating!11&chart_type=area&series=0&jsonp=false&order=&limit=0&role=0&callback=Backendbauer.place&combined=true
 ```
 
