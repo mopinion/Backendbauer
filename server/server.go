@@ -544,6 +544,8 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 	if err != nil {
 		panic(err)
 	}
+	// close again
+	db.Close()
 	return rows, y_field_settings, x_field_settings
 }
 
