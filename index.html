@@ -3,69 +3,171 @@
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+
     <title>Backendbauer by mopinion</title>
   </head>
 
   <body>
-    <div id="container">
+    <header>
       <div class="inner">
+        <h1>Backendbauer</h1>
+        <h2>Charts backend</h2>
+        <a href="https://github.com/mopinion/Backendbauer" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
 
-        <header>
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
           <h1>Backendbauer</h1>
-          <h2>Charts backend</h2>
-        </header>
 
-        <section id="downloads" class="clearfix">
-          <a href="https://github.com/mopinion/Backendbauer/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
-          <a href="https://github.com/mopinion/Backendbauer/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-          <a href="https://github.com/mopinion/Backendbauer" id="view-on-github" class="button"><span>View on GitHub</span></a>
+<h2>What it is</h2>
+
+<p>Backendbauer is a backend server with REST API for generating json data for frontend js charts.
+It is written in Go and used by Mopinion.</p>
+
+<h2>What it needs</h2>
+
+<ul>
+<li>The <a href="http://golang.org">Go</a> language</li>
+<li>The charts library from Highcharts JS.
+<a href="http://www.highcharts.com/">http://www.highcharts.com/</a>
+</li>
+<li>
+<a href="http://github.com/ziutek/mymysql">MyMySQL</a> for Go</li>
+<li><a href="https://github.com/abbot/go-http-auth">Go http auth</a></li>
+</ul><h2>How it works</h2>
+
+<p>Only two files are needed to get Backendbauer working:</p>
+
+<ul>
+<li>server/server.go</li>
+<li>server/config.json</li>
+</ul><p>For testing you can also use server/backendbauer.js</p>
+
+<p>Server.go is the source code. In config.json you can set MySQL databases with custom tables and fields.
+All settings are based on the url from which the API call is made, the referer.</p>
+
+<h3>Install</h3>
+
+<p>Go to server folder<br><code>$ cd server</code><br>
+build server<br><code>$ sudo go build -o server server.go</code><br><code>sudo chmod 755 server</code><br>
+make symbolic link<br><code>$ sudo ln -s [backendbauer dir]/server/server /usr/sbin/backendbauer</code><br>
+copy service file to /etc/init.d<br><code>$ sudo cp backendbauer /etc/init.d/</code><br><code>sudo chmod 755 /etc/init.d/backendbauer</code><br>
+To start and stop<br><code>sudo service backendbauer start</code><br><code>sudo service backendbauer stop</code><br>
+or<br><code>nohup [backendbauer dir]/server/server &amp;</code></p>
+
+<h3>MySQL</h3>
+
+<p>To test the example execute the <code>sql/my_database.sql</code> file on your local MySQL server.
+Set the proper username and password in config.json</p>
+
+<h3>Try</h3>
+
+<p><code>sudo service backendbauer start</code><br>
+Go to<br><code>http://localhost:8888/chart</code></p>
+
+<h2>API</h2>
+
+<p>Endpoint:<br><code>https://[username]:[password]@[host name]:[port]/data</code>  </p>
+
+<p>The API has a number of variables in order to get the right data in json format.</p>
+
+<ul>
+<li>x: data field id as configured in config.json</li>
+<li>y: data field id as configured in config.json</li>
+<li>from_date: start date for query in <code>YYYY-MM-DD</code> format<br>
+</li>
+<li>to_date: end date for query in <code>YYYY-MM-DD</code> format<br>
+</li>
+<li>avg: 0 -&gt; count, 1 -&gt; average or 2 -&gt; percentage (of items that are 1 and not 0) <code>0/1/2</code>
+</li>
+<li>filter: a custom filter that is used to make the query.
+Filters can be added to narrow the query down in the following manner:<br><code>|[field]:[value]</code> translates to <code>AND [field] = "[value]"</code><br><code>|[field]![value]</code> translates to <code>AND [field] &lt;&gt; "[value]"</code><br>
+example:<br><code>filter=field1:right_value|field2!wrong_value</code><br>
+</li>
+<li>chart_type (optional): <code>line</code> or <code>pie</code>, etc. The response will send the type back. This can be used in some cases.</li>
+<li>series (optional): <code>0/1</code> sometimes the ajax js code differs when a request is a series or a chart. The response returns this value.</li>
+<li>jsonp: If <code>true</code> and a callback function is specified, the response will add the callback function (needed for jsonp crossdomain/port calls)</li>
+<li>callback: if specified and <code>jsonp=true</code> the response will be included in a js callback (needed for jsonp crossdomain/port calls)</li>
+<li>order (optional): <code>asc</code> or <code>desc</code> if given the query will be ordered ascending or descending respectively on the x variable</li>
+<li>limit (optional): <code>[number]</code> for example <code>10</code> limits the result to 10 rows</li>
+<li>combined (optional): when <code>true</code> the response will include the categories in the data <code>[['category1','data1']['category2']['data2']]</code> instead of <code>['data1','data2','data3']</code>. Easier to add series after a chart already exists</li>
+<li>name (optional): the name of the y variable in the series. Response returns this name, so it can be used in js manipulation of the highchart object.</li>
+<li>benchmark (optional): fixed value to set the y variable to, for benchmarking.</li>
+</ul><h3>Example request</h3>
+
+<div class="highlight"><pre>http://franz:jawohl@localhost:8888/data?x=1<span class="err">&amp;</span>y=1<span class="err">&amp;</span>from_date=2013-04-01<span class="err">&amp;</span>to_date=2013-04-30<span class="err">&amp;</span>avg=1<span class="err">&amp;</span>filter=my_table.rating!12|my_table.rating!11<span class="err">&amp;</span>chart_type=area<span class="err">&amp;</span>series=0<span class="err">&amp;</span>jsonp=false<span class="err">&amp;</span>order=<span class="err">&amp;</span>limit=0<span class="err">&amp;</span>role=0<span class="err">&amp;</span>callback=Backendbauer.place<span class="err">&amp;</span>combined=true
+</pre></div>
+
+<h2>Response</h2>
+
+<p>The server responds in json format, with the following fields:</p>
+
+<ul>
+<li>categories: an array object with the categories to be used in the chart</li>
+<li>data: an array object with the data (and optionally the catagories for series creation)</li>
+<li>x_field_name: the name of the x field that has been defined in the config.json</li>
+<li>y_field_name: the name of the y field that has been defined in the config.json or the <code>name</code> variable from the request</li>
+<li>x_labels: show labels of x variable?</li>
+</ul><h3>Example response</h3>
+
+<div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">"categories"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">"2012-10-01"</span>
+        <span class="s2">"2012-10-02"</span>
+        <span class="s2">"2012-10-03"</span>
+        <span class="s2">"2012-10-04"</span>
+        <span class="s2">"2012-10-05"</span>
+    <span class="p">],</span>
+    <span class="nt">"data"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span><span class="s2">"2012-10-01"</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span>
+        <span class="p">[</span><span class="s2">"2012-10-02"</span><span class="p">,</span><span class="mf">5.3</span><span class="p">]</span>
+        <span class="p">[</span><span class="s2">"2012-10-03"</span><span class="p">,</span><span class="mf">5.8</span><span class="p">]</span>
+        <span class="p">[</span><span class="s2">"2012-10-04"</span><span class="p">,</span><span class="mf">5.6</span><span class="p">]</span>
+        <span class="p">[</span><span class="s2">"2012-10-05"</span><span class="p">,</span><span class="mf">4.8</span><span class="p">]</span>
+    <span class="p">],</span>
+    <span class="nt">"x_field_name"</span><span class="p">:</span><span class="s2">"Date"</span><span class="p">,</span>
+    <span class="nt">"x_labels"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span>
+    <span class="nt">"y_field_name"</span><span class="p">:</span><span class="s2">"Rating over time average"</span>
+<span class="p">}</span>
+</pre></div>
+
+<h2>Future development</h2>
+
+<ul>
+<li>more filters such as OR and LIKE</li>
+<li>other databases (such as MongoDB)</li>
+<li>API to easily add data to make fast charts of any process imaginable</li>
+</ul>
         </section>
 
-        <hr>
+        <aside id="sidebar">
+          <a href="https://github.com/mopinion/Backendbauer/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/mopinion/Backendbauer/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
 
-        <section id="main_content">
-          <h3>Welcome to Backendbauer.</h3>
+          <p class="repo-owner"><a href="https://github.com/mopinion/Backendbauer"></a> is maintained by <a href="https://github.com/mopinion">mopinion</a>.</p>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
-
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-        </section>
-
-        <footer>
-          Backendbauer is maintained by <a href="https://github.com/mopinion">mopinion</a><br>
-          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
-        </footer>
-
-        
+          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
       </div>
     </div>
+
+  
   </body>
 </html>
