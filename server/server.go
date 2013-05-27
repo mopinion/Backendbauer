@@ -277,6 +277,9 @@ func data(w http.ResponseWriter, r *auth.AuthenticatedRequest) {
 	if x_field == 0 {
 		x_field = 1
 	}
+	if series == "" {
+		series = "0"
+	}
 	var categories, data, output, group1 string
 	categories = "["
 	data = "["
@@ -509,15 +512,6 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 	} else {
 		limit_query = `LIMIT 0,` + limit
 	}
-	// role query
-	// role_id
-	var role_query string
-	if role_id == 0 {
-		role_query = ""
-	} else {
-		role := bb.childQuery(role_id, "")
-		role_query = "AND (f.role_id = " + strconv.Itoa(role_id) + " " + role + ")"
-	}
 	// query
 	query := `
 	SELECT ` + field_select + `, ` + var1 + `
@@ -532,8 +526,6 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 	 ` + extra_filter + `
 	 # date query
 	 ` + date_query + `
-	 # role query
-	 ` + role_query + `
 	 GROUP BY ` + field_group + `
 	  ` + order_query + `
 	  ` + limit_query + `
