@@ -61,7 +61,7 @@ var Backendbauer = function() {
 						var y = series[j]['y'];
 						var avg = series[j]['avg'];
 						var benchmark = series[j]['benchmark'];
-						var filters = series[j]['filters'];
+						var filter = series[j]['filter'];
 						if (typeof series[j]['name'] == "undefined") {
 							var name = '';
 						} else {

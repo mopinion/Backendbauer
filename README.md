@@ -67,8 +67,18 @@ The API has a number of variables in order to get the right data in json format.
 Filters can be added to narrow the query down in the following manner:  
 `|[field]:[value]` translates to `AND [field] = "[value]"`  
 `|[field]![value]` translates to `AND [field] <> "[value]"`  
+These are the SQL commands you can use:  
+`AND` => `|`  
+`OR` => `/`  
+`=` => `:`  
+`>=` => `>:`  
+`<=` => `<:`  
+`<>` => `/`  
+`"` => `^`  
 example:  
-`filter=field1:right_value|field2!wrong_value`  
+`filter=|(field1:1/field2!^wrong^)`  
+translates to  
+`AND (field1 = 1 OR field2 <> "wrong")`
 - chart_type (optional): `line` or `pie`, etc. The response will send the type back. This can be used in some cases.
 - series (optional): `0/1` sometimes the ajax js code differs when a request is a series or a chart. The response returns this value.
 - jsonp: If `true` and a callback function is specified, the response will add the callback function (needed for jsonp crossdomain/port calls)
