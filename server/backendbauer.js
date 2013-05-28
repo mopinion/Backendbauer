@@ -1,6 +1,6 @@
 /*
 Backendbauer
-Mopinion BV Rotterdam
+Copyright 2013, Mopinion BV Rotterdam
 */
 
 // object

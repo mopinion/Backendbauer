@@ -1,7 +1,7 @@
 /*
 Backendbauer
 Floris Snuif
-Mopinion BV Rotterdam
+Copyright 2013, Mopinion BV Rotterdam
 mopinionlabs.com
 */
 package main

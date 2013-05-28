@@ -119,6 +119,9 @@ The server responds in json format, with the following fields:
 }
 ```
 
+## License
+Backendbauer is distributed under the Apache 2.0 License (see LICENSE.txt).
+
 ## Future development
 - more filters such as OR and LIKE
 - other databases (such as MongoDB)
