@@ -426,7 +426,7 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 			}
 		}
 	}
-	// count or average?
+	// count, average or percentage?
 	var var1 string
 	if benchmark != 0 {
 		var1 = `'` + strconv.Itoa(benchmark) + `'`
@@ -449,39 +449,17 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 			standard_filter_query += ` AND ` + standardFilter.Field + ` = "` + standardFilter.Value + `"`
 		}
 	}
-	// extra filters
-	filter_slices := strings.Split(filter, "|")
-	extra_filter := ""
-	var fs_field, fs_value, fs_sign string
-	if len(filter_slices[0]) > 0 {
-		for _, filter_slice := range filter_slices {
-			// AND
-			var colon = regexp.MustCompile(":")
-			if len(colon.FindAllString(filter_slice, -1)) > 0 {
-				fs := strings.Split(filter_slice, ":")
-				fs_field = fs[0]
-				fs_value = fs[1]
-				fs_sign = `=`
-			}
-			// AND NOT
-			var exclam = regexp.MustCompile("!")
-			if len(exclam.FindAllString(filter_slice, -1)) > 0 {
-				fs := strings.Split(filter_slice, "!")
-				fs_field = fs[0]
-				fs_value = fs[1]
-				fs_sign = `<>`
-			}
-			// table given?
-			if len(table.FindAllString(fs_field, -1)) > 0 {
-				extra_filter += ` AND ` + fs_field + ` ` + fs_sign + ` "` + fs_value + `"`
-			} else {
-				extra_filter += ` AND ` + bb.mysql_table + `.` + fs_field + ` ` + fs_sign + ` "` + fs_value + `"`
-			}
-		}
-	}
+	// extra filter
+	extra_filter := filter
+	extra_filter = strings.Replace(extra_filter, ":", " = ", 9999)
+	extra_filter = strings.Replace(extra_filter, "|", " AND ", 9999)
+	extra_filter = strings.Replace(extra_filter, ">:", " >= ", 9999)
+	extra_filter = strings.Replace(extra_filter, "<:", " <= ", 9999)
+	extra_filter = strings.Replace(extra_filter, "/", " OR ", 9999)
+	extra_filter = strings.Replace(extra_filter, "!", " <> ", 9999)
 	// date
 	date_query := ""
-	if len(table.FindAllString(fs_field, -1)) > 0 {
+	if len(table.FindAllString(bb.mysql_date_field, -1)) > 0 {
 		if from_date != "" {
 			date_query += `AND ` + bb.mysql_date_field + ` >= "` + from_date + ` 0:00:00"`
 		}
