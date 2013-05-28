@@ -75,6 +75,7 @@ These are the SQL commands you can use:
 `<=` => `<:`  
 `<>` => `/`  
 `"` => `^`  
+`LIKE` => `~`  
 example:  
 `filter=|(field1:1/field2!^wrong^)`  
 translates to  

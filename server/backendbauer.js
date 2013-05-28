@@ -14,6 +14,7 @@ var Backendbauer = function() {
 	var role = 0;
 	var combined = false;
 	var name = '';
+	var on_load = true;
 	// methods
 	return {
 		// load frontend
@@ -27,13 +28,16 @@ var Backendbauer = function() {
 			to_field = v.to_field;
 			debug = v.debug;
 			jsonp = v.jsonp;
+			on_load = v.on_load;
 			if (typeof v.combined != "undefined") {
 				combined = v.combined;
 			}
 			// loader
 			Backendbauer.loader();
 			// load on start
-			Backendbauer.render(1);
+			if (on_load == true) {
+				Backendbauer.render(1);
+			}
 		},
 		// render chart
 		render:function(id) {

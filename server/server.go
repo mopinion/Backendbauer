@@ -459,6 +459,7 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 	extra_filter = strings.Replace(extra_filter, "/", " OR ", big_nr)
 	extra_filter = strings.Replace(extra_filter, "!", " <> ", big_nr)
 	extra_filter = strings.Replace(extra_filter, `^`, `"`, big_nr)
+	extra_filter = strings.Replace(extra_filter, `~`, ` LIKE `, big_nr)
 	// date
 	date_query := ""
 	if len(table.FindAllString(bb.mysql_date_field, -1)) > 0 {
@@ -564,6 +565,7 @@ func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 						'debug':true,
 						'jsonp':false,
 						'combined':true,
+						'on_load':false,
 						'filter':'my_table.rating!12',
 						'charts': [
 							{
