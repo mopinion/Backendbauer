@@ -121,6 +121,7 @@ The server responds in json format, with the following fields:
 
 ## License
 Backendbauer is distributed under the Apache 2.0 License (see LICENSE.txt).
+You can contact me by email floris (at) mopinionlabs.com
 
 ## Future development
 - more filters such as OR and LIKE
