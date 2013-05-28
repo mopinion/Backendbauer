@@ -19,7 +19,7 @@ var Backendbauer = function() {
 		// load frontend
 		load:function(v) {
 			// load vars
-			standard_filter = v.filter+'|';
+			standard_filter = v.filter;
 			charts = v.charts;
 			div = v.container;
 			server_url = v.server;
@@ -68,7 +68,7 @@ var Backendbauer = function() {
 							var name = series[j]['name'];
 						}
 						// extra filter
-						var set_filters = filter;
+						set_filters += filter;
 						if (j == 0) {
 							var set_series = 0;
 						} else {
