@@ -562,46 +562,13 @@ func (bb *Backendbauer) fieldSettings(field_type string, field_id int) varsType 
 	return output
 }
 
-// roles tree
-func (bb *Backendbauer) getRolesTree(parent_id int, children []int) []int {
-	db := bb.DB()
-	query := `SELECT id FROM
-	roles
-	WHERE parent_id = ` + strconv.Itoa(parent_id)
-	rows, _, err := db.Query(query)
-	if err != nil {
-		panic(err)
-	}
-	for _, row := range rows {
-		child_id := row.Int(0)
-		//children[i] = child_id
-		children = append(children, child_id)
-		children = bb.getRolesTree(child_id, children)
-	}
-	return children
-}
-
-func (bb *Backendbauer) childQuery(role_id int, table string) string {
-	if table == "" {
-		table = "f.role_id"
-	}
-	var childr []int
-	children := bb.getRolesTree(role_id, childr)
-	fmt.Println("query")
-	fmt.Println(children)
-	query := ""
-	for _, child := range children {
-		query += " OR " + table + " = " + strconv.Itoa(child)
-	}
-	return query
-}
-
+// chart js
 func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 	html := `
 	<html>
 		<head>
-			<script type="text/javascript" src="http://backendbauer.com/assets/js/jquery.js"></script>
-			<script type="text/javascript" src="http://backendbauer.com/assets/js/highcharts.latest.js"></script>
+			<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+			<script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
 			<script src="http://code.highcharts.com/modules/exporting.js"></script>
 			<title>Backendbauer chart test</title>
 		</head>
