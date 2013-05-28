@@ -450,13 +450,14 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 		}
 	}
 	// extra filter
+	big_nr := 9999
 	extra_filter := filter
-	extra_filter = strings.Replace(extra_filter, ":", " = ", 9999)
-	extra_filter = strings.Replace(extra_filter, "|", " AND ", 9999)
-	extra_filter = strings.Replace(extra_filter, ">:", " >= ", 9999)
-	extra_filter = strings.Replace(extra_filter, "<:", " <= ", 9999)
-	extra_filter = strings.Replace(extra_filter, "/", " OR ", 9999)
-	extra_filter = strings.Replace(extra_filter, "!", " <> ", 9999)
+	extra_filter = strings.Replace(extra_filter, ":", " = ", big_nr)
+	extra_filter = strings.Replace(extra_filter, "|", " AND ", big_nr)
+	extra_filter = strings.Replace(extra_filter, ">:", " >= ", big_nr)
+	extra_filter = strings.Replace(extra_filter, "<:", " <= ", big_nr)
+	extra_filter = strings.Replace(extra_filter, "/", " OR ", big_nr)
+	extra_filter = strings.Replace(extra_filter, "!", " <> ", big_nr)
 	// date
 	date_query := ""
 	if len(table.FindAllString(bb.mysql_date_field, -1)) > 0 {
@@ -571,22 +572,12 @@ func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 										'y':1,
 										'avg':1,
 										'benchmark':6,
-										'filters':[
-											{
-												'field':'my_table.rating',
-												'not':11
-											}
-										]
+										'filter':'|my_table.rating!11'
 									},
 									{
 										'y':1,
 										'avg':1,
-										'filters':[
-											{
-												'field':'my_table.rating',
-												'not':11
-											}
-										]
+										'filter':'|my_table.rating!11'
 									}
 								],
 								'x':1,
@@ -599,12 +590,7 @@ func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 									{
 										'y':1,
 										'avg':0,
-										'filters':[
-											{
-												'field':'my_table.rating',
-												'not':11
-											}
-										]
+										'filter':'|my_table.rating!11'
 									}
 								],
 								'x':2,
@@ -617,12 +603,7 @@ func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 									{
 										'y':2,
 										'avg':2,
-										'filters':[
-											{
-												'field':'my_table.rating',
-												'not':11
-											}
-										]
+										'filter':'|my_table.rating!11'
 									}
 								],
 								'x':1,

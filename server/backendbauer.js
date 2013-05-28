@@ -67,22 +67,8 @@ var Backendbauer = function() {
 						} else {
 							var name = series[j]['name'];
 						}
-						for (k in filters) {
-							var field = filters[k]['field'];
-							var value = filters[k]['value'];
-							var value_not = filters[k]['not'];
-							if (k == 0) {
-								var sep = '';
-							} else {
-								var sep = '|';
-							}
-							if (value != undefined) {
-								set_filters += sep+field+':'+value;
-							}
-							if (value_not != undefined) {
-								set_filters += sep+field+'!'+value_not;
-							}
-						}
+						// extra filter
+						var set_filters = filter;
 						if (j == 0) {
 							var set_series = 0;
 						} else {
