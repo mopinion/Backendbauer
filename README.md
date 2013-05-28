@@ -10,7 +10,7 @@ It is written in Go and used by Mopinion.
 * The [Go](http://golang.org) language
 * The charts library from Highcharts JS.
 http://www.highcharts.com/
-* [MyMySQL] (http://github.com/ziutek/mymysql) for Go
+* [MyMySQL](http://github.com/ziutek/mymysql) for Go
 * [Go http auth](https://github.com/abbot/go-http-auth)
 
 ## How it works
