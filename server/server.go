@@ -436,7 +436,8 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 		// percentage of total
 		var1 = `count(CASE WHEN ` + y_field_settings.FieldName + ` = 1 THEN 1 END) / count(*) * 100`
 	} else {
-		var1 = `COUNT(` + y_field_settings.FieldName + `)`
+		// count
+		var1 = `COUNT(DISTINCT(` + y_field_settings.FieldName + `))`
 	}
 	// standard filters
 	standardFilters := bb.standardFilter
@@ -567,8 +568,8 @@ func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 						'debug':true,
 						'jsonp':false,
 						'combined':true,
-						'on_load':false,
-						'filter':'my_table.rating!12',
+						'on_load':true,
+						'filter':'|my_table.rating!12',
 						'charts': [
 							{
 								'id':1,
