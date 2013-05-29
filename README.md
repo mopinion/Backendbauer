@@ -73,13 +73,15 @@ These are the SQL commands you can use:
 `=` => `:`  
 `>=` => `>:`  
 `<=` => `<:`  
-`<>` => `/`  
+`<>` => `!`  
 `"` => `^`  
 `LIKE` => `~`  
+`%` => `*`  
+`NOT LIKE` => `!~`  
 example:  
-`filter=|(field1:1/field2!^wrong^)`  
+`filter=|(field1:1/field2!^wrong^)/field3!~^*bad*^`  
 translates to  
-`AND (field1 = 1 OR field2 <> "wrong")`
+`AND (field1 = 1 OR field2 <> "wrong") OR field3 NOT LIKE "%bad%"`
 - chart_type (optional): `line` or `pie`, etc. The response will send the type back. This can be used in some cases.
 - series (optional): `0/1` sometimes the ajax js code differs when a request is a series or a chart. The response returns this value.
 - jsonp: If `true` and a callback function is specified, the response will add the callback function (needed for jsonp crossdomain/port calls)
@@ -135,7 +137,6 @@ Apache 2.0 License (see LICENSE.txt).
 You can contact me by email floris (at) mopinionlabs.com
 
 ## Future development
-- more filters such as OR and LIKE
 - other databases (such as MongoDB)
 - API to easily add data to make fast charts of any process imaginable
-	
+- different authentication methods
