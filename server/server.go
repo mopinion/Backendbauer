@@ -111,7 +111,7 @@ func main() {
 	// get path
 	if runtime.GOOS == "linux" {
 		// production path
-		bb.path = "./"
+		bb.path = "/var/www/backendbauer/server/"
 	} else {
 		// local test path
 		bb.path = "./"
