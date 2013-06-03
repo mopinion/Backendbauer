@@ -42,7 +42,7 @@ var Backendbauer = function() {
 		// render chart
 		render:function(id) {
 			chart_id = id;
-			for (i in charts) {
+			for (var i=0; i<charts.length; i++) {
 				if (charts[i]['id'] == id) {
 					var series = charts[i]['series'];
 					var x = charts[i]['x'];
@@ -60,7 +60,7 @@ var Backendbauer = function() {
 					} else {
 						role = charts[i]['role'];
 					}
-					for (j in series) {
+					for (var j=0; j<series.length; j++) {
 						set_filters = standard_filter
 						var y = series[j]['y'];
 						var avg = series[j]['avg'];
