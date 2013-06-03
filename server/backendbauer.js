@@ -6,7 +6,7 @@ Copyright 2013, Mopinion BV Rotterdam
 // object
 var Backendbauer = function() {
 	// global vars
-	var charts, options, x, y, chart_type, avg, colors, title, series, from_date, to_date, filter, div, server_url, from_field, to_field, chart_id, order, standard_filter, benchmark;
+	var charts, options, x, y, chart_type, avg, colors, title, series, from_date, to_date, filter, div, server_url, from_field, to_field, chart_id, order, standard_filter, benchmark, static_filter;
 	var series = 0;
 	var debug = false;
 	var jsonp = false;
@@ -66,13 +66,18 @@ var Backendbauer = function() {
 						var avg = series[j]['avg'];
 						var benchmark = series[j]['benchmark'];
 						var filter = series[j]['filter'];
+						if (series[j]['static_filter'] == "undefined" || series[j]['static_filter'] == undefined) {
+							var static_filter = '';
+						} else {
+							var static_filter = series[j]['static_filter'];
+						}
 						if (typeof series[j]['name'] == "undefined") {
 							var name = '';
 						} else {
 							var name = series[j]['name'];
 						}
 						// extra filter
-						set_filters += filter;
+						set_filters += filter + static_filter;
 						if (j == 0) {
 							var set_series = 0;
 						} else {

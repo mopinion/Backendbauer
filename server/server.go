@@ -131,8 +131,16 @@ func main() {
 		fmt.Fprint(w, "Computer says no")
 	})
 	// data location
-	authenticator := auth.NewBasicAuthenticator("Please, log in to use Backendbauer", password)
-	http.HandleFunc("/data", authenticator.Wrap(data))
+	settings := bb.settings()
+	is_auth := settings.Object.Auth
+	if len(is_auth) > 0 {
+		authenticator := auth.NewBasicAuthenticator("Please, log in to use Backendbauer", password)
+		http.HandleFunc("/data", auth.JustCheck(authenticator, request))
+	} else {
+		http.HandleFunc("/data", func(w http.ResponseWriter, r *http.Request) {
+			request(w, r)
+		})
+	}
 	// test chart location
 	http.HandleFunc("/chart", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -237,7 +245,7 @@ func (bb *Backendbauer) js(w http.ResponseWriter, r *http.Request) string {
 	return text
 }
 
-func data(w http.ResponseWriter, r *auth.AuthenticatedRequest) {
+func request(w http.ResponseWriter, r *http.Request) {
 	bb := new(Backendbauer)
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
@@ -266,11 +274,17 @@ func data(w http.ResponseWriter, r *auth.AuthenticatedRequest) {
 	jsonp, _ := strconv.ParseBool(r.FormValue("jsonp"))
 	order := r.FormValue("order")
 	limit := r.FormValue("limit")
-	role_id, _ := strconv.Atoi(r.FormValue("role"))
 	callback := r.FormValue("callback")
 	combined, _ := strconv.ParseBool(r.FormValue("combined"))
 	name := r.FormValue("name")
 	benchmark, _ := strconv.Atoi(r.FormValue("benchmark"))
+	// make output
+	output := bb.data(y_field, x_field, from_date, to_date, avg, filter, chart_type, series, jsonp, order, limit, callback, combined, name, benchmark)
+	// output
+	fmt.Fprint(w, output)
+}
+
+func (bb *Backendbauer) data(y_field int, x_field int, from_date string, to_date string, avg int, filter string, chart_type string, series string, jsonp bool, order string, limit string, callback string, combined bool, name string, benchmark int) string {
 	if y_field == 0 {
 		y_field = 1
 	}
@@ -283,7 +297,7 @@ func data(w http.ResponseWriter, r *auth.AuthenticatedRequest) {
 	var categories, data, output, group1 string
 	categories = "["
 	data = "["
-	rows, y_field_settings, x_field_settings := bb.connect(y_field, x_field, from_date, to_date, avg, filter, order, limit, role_id, benchmark)
+	rows, y_field_settings, x_field_settings := bb.connect(y_field, x_field, from_date, to_date, avg, filter, order, limit, benchmark)
 	for i, row := range rows {
 		// get values from fields
 		value := row.Str(1)
@@ -336,7 +350,7 @@ func data(w http.ResponseWriter, r *auth.AuthenticatedRequest) {
 	if jsonp == true && callback != "" {
 		output = callback + `(` + output + `);`
 	}
-	fmt.Fprint(w, output)
+	return output
 }
 
 func (bb *Backendbauer) mapValue(input string, x_field int) string {
@@ -365,7 +379,7 @@ func (bb *Backendbauer) DB() mysql.Conn {
 	return db
 }
 
-func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_date string, avg int, filter string, order string, limit string, role_id int, benchmark int) ([]mysql.Row, varsType, varsType) {
+func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_date string, avg int, filter string, order string, limit string, benchmark int) ([]mysql.Row, varsType, varsType) {
 	db := bb.DB()
 	// get settings for fields
 	y_field_settings := bb.fieldSettings("y", y_field)
