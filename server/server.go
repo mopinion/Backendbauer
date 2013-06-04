@@ -451,7 +451,8 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 		var1 = `count(CASE WHEN ` + y_field_settings.FieldName + ` = 1 THEN 1 END) / count(*) * 100`
 	} else {
 		// count
-		var1 = `COUNT(DISTINCT(` + y_field_settings.FieldName + `))`
+		//var1 = `COUNT(DISTINCT(` + y_field_settings.FieldName + `))`
+		var1 = `COUNT(` + y_field_settings.FieldName + `)`
 	}
 	// standard filters
 	standardFilters := bb.standardFilter
