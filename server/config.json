@@ -10,6 +10,12 @@
 				"password":"$apr1$RAUFQbKW$WZZxFisLk111oepcZ5EFl0"
 			}
 		],
+		"mongodb":
+		{
+			"servers":[
+				
+			]
+		},
 		"mysql":
 		{
 			"servers":[
@@ -92,6 +98,13 @@
 				"name":"Promoter",
 				"fieldName":"promoter",
 				"type":"nominal"
+			},
+			{
+				"id":3,
+				"name":"Special number",
+				"fieldName":"rating",
+				"select":"((AVG(rating) * 20) + (COUNT(CASE WHEN rating >= 8 THEN 1 END) / COUNT(*) * 100))/2",
+				"type":"custom"
 			}
 		]
 	}

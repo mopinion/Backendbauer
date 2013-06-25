@@ -82,6 +82,7 @@ type varsType struct {
 	Type      string
 	Values    []Values
 	Join      []JoinType
+	Select    string
 }
 
 type filterType struct {
@@ -440,11 +441,16 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 			}
 		}
 	}
-	// count, average or percentage?
+	// count, average or percentage? or benchmark? or custom select?
 	var var1 string
 	if benchmark != 0 {
+		// benchmark
 		var1 = `'` + strconv.Itoa(benchmark) + `'`
+	} else if y_field_settings.Type == "custom" {
+		// custom y field query
+		var1 = y_field_settings.Select
 	} else if avg == 1 && y_field_settings.Type == "ratio" {
+		// average
 		var1 = `AVG(` + y_field_settings.FieldName + `)`
 	} else if avg == 2 {
 		// percentage of total
@@ -630,6 +636,18 @@ func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 								'x':1,
 								'type':'line',
 								'title':'Percentage promoters'
+							},
+							{
+								'id':4,
+								'series':[
+									{
+										'y':3,
+										'filter':''
+									}
+								],
+								'x':1,
+								'type':'line',
+								'title':'Special number over time'
 							}
 						]
 					};
@@ -648,6 +666,7 @@ func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 						<option value="1">Rating over time</value>
 						<option value="2">Groups</value>
 						<option value="3">Percentage</value>
+						<option value="4">Special number</value>
 					</select>
 				</div>
 				<div style="float:left;padding:10px;">
