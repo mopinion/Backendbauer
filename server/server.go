@@ -40,6 +40,10 @@ type Backendbauer struct {
 	path             string
 	referer          string
 	standardFilter   []filterType
+	mongo_host       string
+	mongo_user       string
+	mongo_pass       string
+	mongo_database   string
 }
 
 type jsonobject struct {
@@ -73,6 +77,11 @@ type serversType struct {
 	DateField      string
 	StandardFilter []filterType
 	MaxItems       int
+	MongoHost      string
+	MongoPort      int
+	MongoUser      string
+	MongoPass      string
+	MongoDatabase  string
 }
 
 type varsType struct {
@@ -208,6 +217,10 @@ func (bb *Backendbauer) serverSettings(referer string) {
 			bb.mysql_date_field = server.DateField
 			bb.standardFilter = server.StandardFilter
 			bb.max_items = server.MaxItems
+			bb.mongo_host = server.MongoHost + ":" + strconv.Itoa(server.MongoPort)
+			bb.mongo_user = server.MongoUser
+			bb.mongo_pass = server.MongoPass
+			bb.mongo_database = server.MongoDatabase
 		}
 	}
 }
@@ -279,8 +292,16 @@ func request(w http.ResponseWriter, r *http.Request) {
 	combined, _ := strconv.ParseBool(r.FormValue("combined"))
 	name := r.FormValue("name")
 	benchmark, _ := strconv.Atoi(r.FormValue("benchmark"))
-	// make output
-	output := bb.data(y_field, x_field, from_date, to_date, avg, filter, chart_type, series, jsonp, order, limit, callback, combined, name, benchmark)
+	mongo, _ := strconv.ParseBool(r.FormValue("mongo"))
+	//coll := r.FormValue("coll")
+	output := ""
+	if mongo {
+		// mongo
+		//output = bb.mongoData(coll)
+	} else {
+		// mysql
+		output = bb.data(y_field, x_field, from_date, to_date, avg, filter, chart_type, series, jsonp, order, limit, callback, combined, name, benchmark)
+	}
 	// output
 	fmt.Fprint(w, output)
 }
@@ -566,6 +587,46 @@ func (bb *Backendbauer) fieldSettings(field_type string, field_id int) varsType 
 	}
 	return output
 }
+
+// MongoDB
+/*
+// data
+func (bb *Backendbauer) mongoData(coll string) string {
+	// db
+	db := bb.MGOconnect()
+	// collection
+	c := db.C(coll)
+	// query
+	Flose := []Flo{}
+	err := c.Find(bson.M{}).All(&Flose)
+	if err != nil {
+		fmt.Println("query error")
+		panic(err)
+	}
+	return Flose
+}
+
+// connect to MongoDB
+func (bb *Backendbauer) MGOconnect() *mgo.Database {
+	//fmt.Println(WF.Mhost + ":" + strconv.Itoa(WF.Mport))
+	// connection
+	session, err := mgo.Dial(bb.mongo_host)
+	if err != nil {
+		fmt.Println("session error")
+		panic(err)
+	}
+	//defer session.Close()
+	// database
+	db := session.DB(bb.mongo_database)
+	// login
+	err = db.Login(bb.mongo_user, bb.mongo_pass)
+	if err != nil {
+		fmt.Println("login error")
+		panic(err)
+	}
+	return db
+}
+*/
 
 // chart js
 func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {

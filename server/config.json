@@ -10,12 +10,6 @@
 				"password":"$apr1$RAUFQbKW$WZZxFisLk111oepcZ5EFl0"
 			}
 		],
-		"mongodb":
-		{
-			"servers":[
-				
-			]
-		},
 		"mysql":
 		{
 			"servers":[
@@ -34,7 +28,12 @@
 							"value":"1"
 						}
 					],
-					"maxItems":30
+					"maxItems":30,
+					"mongoHost":"",
+					"mongoPort":12345,
+					"mongoUser":"",
+					"mongoPass":"",
+					"mongoDatabase":""
 				},
 				{
 					"domain":"",
