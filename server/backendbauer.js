@@ -15,6 +15,7 @@ var Backendbauer = function() {
 	var combined = false;
 	var name = '';
 	var on_load = true;
+	var global = {};
 	// methods
 	return {
 		// load frontend
@@ -65,6 +66,11 @@ var Backendbauer = function() {
 					} else {
 						var plotOptions = charts[i]['plotOptions'];
 					}
+					if (typeof charts[i]['xAxis'] == "undefined") {
+						var xAxis;
+					} else {
+						var xAxis = charts[i]['xAxis'];
+					}
 					for (var j=0; j<series.length; j++) {
 						set_filters = standard_filter
 						var y = series[j]['y'];
@@ -89,7 +95,7 @@ var Backendbauer = function() {
 							var set_series = 1;
 						}
 						if (set_series == 0) {
-							Backendbauer.chart(x,y,chart_type,avg,colors,title,set_series,set_filters,order,limit,name,benchmark,plotOptions);
+							Backendbauer.chart(x,y,chart_type,avg,colors,title,set_series,set_filters,order,limit,name,benchmark,plotOptions,xAxis);
 						} else {
 							Backendbauer.series(x,y,chart_type,avg,colors,title,set_series,set_filters,order,limit,name,benchmark);
 						}
@@ -104,7 +110,7 @@ var Backendbauer = function() {
 			Backendbauer.render(chart_id);
 		},
 		// get data
-		chart:function(set_x,set_y,set_chart_type,set_avg,set_colors,set_title,set_series,set_filters,set_order,set_limit,set_name,set_benchmark,plotOptions) {
+		chart:function(set_x,set_y,set_chart_type,set_avg,set_colors,set_title,set_series,set_filters,set_order,set_limit,set_name,set_benchmark,plotOptions,xAxis) {
 			// vars
 			if (set_x == undefined) {
 				set_x = 1;
@@ -231,6 +237,15 @@ var Backendbauer = function() {
 			// custom plotOptions
 			if (plotOptions != undefined) {
 				options.plotOptions = plotOptions;
+				global.plotOptions = plotOptions;
+			}
+			// custom xAxis
+			if (xAxis != undefined) {
+				options.xAxis = xAxis;
+				global.xAxis = xAxis;
+			}
+			if (debug) {
+				Backendbauer.log(options);
 			}
 			if (jsonp == true) {
 				Backendbauer.jsonp();
@@ -350,9 +365,13 @@ var Backendbauer = function() {
 			Backendbauer.log('series: '+series);
 			if (series == 0) {
 				// x-axis
-				options.xAxis.categories = data['categories'];
-				options.xAxis.title.text = data['x_field_name'];
-				options.xAxis.labels.enabled = data['x_labels'];
+				if ('xAxis' in global) {
+					// leave it
+				} else {
+					options.xAxis.categories = data['categories'];
+					options.xAxis.title.text = data['x_field_name'];
+					options.xAxis.labels.enabled = data['x_labels'];
+				}
 				// make chart object
 				chart = new Highcharts.Chart(options);
 			}
