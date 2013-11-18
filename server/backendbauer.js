@@ -60,6 +60,11 @@ var Backendbauer = function() {
 					} else {
 						role = charts[i]['role'];
 					}
+					if (typeof charts[i]['plotOptions'] == "undefined") {
+						var plotOptions;
+					} else {
+						var plotOptions = charts[i]['plotOptions'];
+					}
 					for (var j=0; j<series.length; j++) {
 						set_filters = standard_filter
 						var y = series[j]['y'];
@@ -84,7 +89,7 @@ var Backendbauer = function() {
 							var set_series = 1;
 						}
 						if (set_series == 0) {
-							Backendbauer.chart(x,y,chart_type,avg,colors,title,set_series,set_filters,order,limit,name,benchmark);
+							Backendbauer.chart(x,y,chart_type,avg,colors,title,set_series,set_filters,order,limit,name,benchmark,plotOptions);
 						} else {
 							Backendbauer.series(x,y,chart_type,avg,colors,title,set_series,set_filters,order,limit,name,benchmark);
 						}
@@ -99,7 +104,7 @@ var Backendbauer = function() {
 			Backendbauer.render(chart_id);
 		},
 		// get data
-		chart:function(set_x,set_y,set_chart_type,set_avg,set_colors,set_title,set_series,set_filters,set_order,set_limit,set_name,set_benchmark) {
+		chart:function(set_x,set_y,set_chart_type,set_avg,set_colors,set_title,set_series,set_filters,set_order,set_limit,set_name,set_benchmark,plotOptions) {
 			// vars
 			if (set_x == undefined) {
 				set_x = 1;
@@ -223,6 +228,10 @@ var Backendbauer = function() {
 			};
 			// y-axis
 			options.yAxis.title.text = title;
+			// custom plotOptions
+			if (plotOptions != undefined) {
+				options.plotOptions = plotOptions;
+			}
 			if (jsonp == true) {
 				Backendbauer.jsonp();
 			} else {
