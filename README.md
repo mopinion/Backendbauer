@@ -91,6 +91,7 @@ translates to
 - combined (optional): when `true` the response will include the categories in the data `[['category1','data1']['category2']['data2']]` instead of `['data1','data2','data3']`. Easier to add series after a chart already exists
 - name (optional): the name of the y variable in the series. Response returns this name, so it can be used in js manipulation of the highchart object.
 - benchmark (optional): fixed value to set the y variable to, for benchmarking.
+- decimal (optional): set # decimals for `avg=1` (default: 1)
 
 ### Example request
 

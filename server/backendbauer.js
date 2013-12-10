@@ -6,7 +6,7 @@ Copyright 2013, Mopinion BV Rotterdam
 // object
 var Backendbauer = function() {
 	// global vars
-	var charts, options, x, y, chart_type, avg, colors, title, series, from_date, to_date, filter, div, server_url, from_field, to_field, chart_id, order, standard_filter, benchmark, static_filter;
+	var charts, options, x, y, chart_type, avg, colors, title, series, from_date, to_date, filter, div, server_url, from_field, to_field, chart_id, order, standard_filter, benchmark, static_filter, decimal;
 	var series = 0;
 	var debug = false;
 	var jsonp = false;
@@ -76,6 +76,7 @@ var Backendbauer = function() {
 						var y = series[j]['y'];
 						var avg = series[j]['avg'];
 						var benchmark = series[j]['benchmark'];
+						var decimal = series[j]['decimal'];
 						var filter = series[j]['filter'];
 						if (series[j]['static_filter'] == "undefined" || series[j]['static_filter'] == undefined) {
 							var static_filter = '';
@@ -95,9 +96,9 @@ var Backendbauer = function() {
 							var set_series = 1;
 						}
 						if (set_series == 0) {
-							Backendbauer.chart(x,y,chart_type,avg,colors,title,set_series,set_filters,order,limit,name,benchmark,plotOptions,xAxis);
+							Backendbauer.chart(x,y,chart_type,avg,colors,title,set_series,set_filters,order,limit,name,benchmark,plotOptions,xAxis,decimal);
 						} else {
-							Backendbauer.series(x,y,chart_type,avg,colors,title,set_series,set_filters,order,limit,name,benchmark);
+							Backendbauer.series(x,y,chart_type,avg,colors,title,set_series,set_filters,order,limit,name,benchmark,decimal);
 						}
 						//Backendbauer.sleep(5000);
 					}
@@ -110,7 +111,7 @@ var Backendbauer = function() {
 			Backendbauer.render(chart_id);
 		},
 		// get data
-		chart:function(set_x,set_y,set_chart_type,set_avg,set_colors,set_title,set_series,set_filters,set_order,set_limit,set_name,set_benchmark,plotOptions,xAxis) {
+		chart:function(set_x,set_y,set_chart_type,set_avg,set_colors,set_title,set_series,set_filters,set_order,set_limit,set_name,set_benchmark,plotOptions,xAxis,set_decimal) {
 			// vars
 			if (set_x == undefined) {
 				set_x = 1;
@@ -150,6 +151,11 @@ var Backendbauer = function() {
 				benchmark = set_benchmark;
 			} else {
 				benchmark = '';
+			}
+			if (set_decimal != undefined) {
+				decimal = set_decimal;
+			} else {
+				decimal = '';
 			}
 			x = set_x;
 			y = set_y;
@@ -254,7 +260,7 @@ var Backendbauer = function() {
 			}
 		},
 		// load series
-		series:function(set_x,set_y,set_chart_type,set_avg,set_colors,set_title,set_series,set_filters,set_order,set_limit,set_name,set_benchmark) {
+		series:function(set_x,set_y,set_chart_type,set_avg,set_colors,set_title,set_series,set_filters,set_order,set_limit,set_name,set_benchmark,set_decimal) {
 			// vars
 			if (set_x == undefined) {
 				set_x = 1;
@@ -295,6 +301,11 @@ var Backendbauer = function() {
 			} else {
 				benchmark = '';
 			}
+			if (set_decimal != undefined) {
+				decimal = set_decimal;
+			} else {
+				decimal = '';
+			}
 			x = set_x;
 			y = set_y;
 			chart_type = set_chart_type;
@@ -319,7 +330,7 @@ var Backendbauer = function() {
 		},
 		// form data querystring
 		query:function() {
-			var query = 'x='+x+'&y='+y+'&from_date='+from_date+'&to_date='+to_date+'&avg='+avg+'&filter='+filter+'&chart_type='+chart_type+'&series='+series+'&jsonp='+jsonp+'&order='+order+'&limit='+limit+'&role='+role+'&callback=Backendbauer.place&combined='+combined+'&name='+name+'&benchmark='+benchmark;
+			var query = 'x='+x+'&y='+y+'&from_date='+from_date+'&to_date='+to_date+'&avg='+avg+'&filter='+filter+'&chart_type='+chart_type+'&series='+series+'&jsonp='+jsonp+'&order='+order+'&limit='+limit+'&role='+role+'&callback=Backendbauer.place&combined='+combined+'&name='+name+'&benchmark='+benchmark+'&decimal='+decimal;
 			if (debug == true) {
 				Backendbauer.log(query);
 			}
