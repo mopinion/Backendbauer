@@ -293,6 +293,11 @@ func request(w http.ResponseWriter, r *http.Request) {
 	name := r.FormValue("name")
 	benchmark, _ := strconv.Atoi(r.FormValue("benchmark"))
 	mongo, _ := strconv.ParseBool(r.FormValue("mongo"))
+	decimal, _ := strconv.Atoi(r.FormValue("decimal"))
+	// round 1 (fight!)
+	if decimal == 0 {
+		decimal = 1
+	}
 	//coll := r.FormValue("coll")
 	output := ""
 	if mongo {
@@ -300,13 +305,13 @@ func request(w http.ResponseWriter, r *http.Request) {
 		//output = bb.mongoData(coll)
 	} else {
 		// mysql
-		output = bb.data(y_field, x_field, from_date, to_date, avg, filter, chart_type, series, jsonp, order, limit, callback, combined, name, benchmark)
+		output = bb.data(y_field, x_field, from_date, to_date, avg, filter, chart_type, series, jsonp, order, limit, callback, combined, name, benchmark, decimal)
 	}
 	// output
 	fmt.Fprint(w, output)
 }
 
-func (bb *Backendbauer) data(y_field int, x_field int, from_date string, to_date string, avg int, filter string, chart_type string, series string, jsonp bool, order string, limit string, callback string, combined bool, name string, benchmark int) string {
+func (bb *Backendbauer) data(y_field int, x_field int, from_date string, to_date string, avg int, filter string, chart_type string, series string, jsonp bool, order string, limit string, callback string, combined bool, name string, benchmark int, decimal int) string {
 	if y_field == 0 {
 		y_field = 1
 	}
@@ -327,7 +332,7 @@ func (bb *Backendbauer) data(y_field int, x_field int, from_date string, to_date
 		// round value if ratio and avg
 		if y_field_settings.Type == "ratio" && avg == 1 {
 			value_float, _ := strconv.ParseFloat(value, 64)
-			value = strconv.FormatFloat(value_float, 'e', 1, 64)
+			value = strconv.FormatFloat(value_float, 'e', decimal, 64)
 		}
 		// remove time from date
 		if x_field_settings.Type == "date" {
