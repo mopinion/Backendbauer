@@ -16,6 +16,8 @@ import (
 	_ "github.com/ziutek/mymysql/native"
 	"io"
 	"io/ioutil"
+	"labix.org/v2/mgo"
+	"labix.org/v2/mgo/bson"
 	"net/http"
 	"os"
 	"regexp"
@@ -41,9 +43,11 @@ type Backendbauer struct {
 	referer          string
 	standardFilter   []filterType
 	mongo_host       string
+	mongo_port       int
 	mongo_user       string
 	mongo_pass       string
 	mongo_database   string
+	mongo_coll       string
 }
 
 type jsonobject struct {
@@ -115,6 +119,11 @@ type OnType struct {
 	Right string
 }
 
+// mongoDB
+type Result struct {
+	Content string
+}
+
 func main() {
 	// object
 	bb := new(Backendbauer)
@@ -165,7 +174,18 @@ func main() {
 		w.Header().Set("Content-Type", "application/javascript")
 		bb.js(w, r)
 	})
-	http.ListenAndServe(":8888", nil)
+	// port
+	args := os.Args
+	var port string
+	if len(args) >= 2 {
+		port = args[1]
+	} else {
+		port = ""
+	}
+	if port == "" {
+		port = "8888"
+	}
+	http.ListenAndServe(":"+port, nil)
 }
 
 // authentication 
@@ -221,6 +241,9 @@ func (bb *Backendbauer) serverSettings(referer string) {
 			bb.mongo_user = server.MongoUser
 			bb.mongo_pass = server.MongoPass
 			bb.mongo_database = server.MongoDatabase
+			domain_slice := strings.Split(bb.domain, ".")
+			subdom = domain_slice[0]
+			bb.mongo_coll = subdom
 		}
 	}
 }
@@ -596,21 +619,20 @@ func (bb *Backendbauer) fieldSettings(field_type string, field_id int) varsType 
 }
 
 // MongoDB
-/*
 // data
-func (bb *Backendbauer) mongoData(coll string) string {
+func (bb *Backendbauer) mongoData() []Result {
 	// db
 	db := bb.MGOconnect()
 	// collection
-	c := db.C(coll)
+	c := db.C(bb.mongo_coll)
 	// query
-	Flose := []Flo{}
-	err := c.Find(bson.M{}).All(&Flose)
+	Results := []Result{}
+	err := c.Find(bson.M{}).All(&Results)
 	if err != nil {
 		fmt.Println("query error")
 		panic(err)
 	}
-	return Flose
+	return Results
 }
 
 // connect to MongoDB
@@ -633,7 +655,6 @@ func (bb *Backendbauer) MGOconnect() *mgo.Database {
 	}
 	return db
 }
-*/
 
 // chart js
 func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
