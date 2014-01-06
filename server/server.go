@@ -16,8 +16,8 @@ import (
 	_ "github.com/ziutek/mymysql/native"
 	"io"
 	"io/ioutil"
-	"labix.org/v2/mgo"
-	"labix.org/v2/mgo/bson"
+	//"labix.org/v2/mgo"
+	//"labix.org/v2/mgo/bson"
 	"net/http"
 	"os"
 	"regexp"
@@ -242,7 +242,7 @@ func (bb *Backendbauer) serverSettings(referer string) {
 			bb.mongo_pass = server.MongoPass
 			bb.mongo_database = server.MongoDatabase
 			domain_slice := strings.Split(bb.domain, ".")
-			subdom = domain_slice[0]
+			subdom := domain_slice[0]
 			bb.mongo_coll = subdom
 		}
 	}
