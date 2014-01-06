@@ -325,7 +325,7 @@ func request(w http.ResponseWriter, r *http.Request) {
 	output := ""
 	if mongo {
 		// mongo
-		//output = bb.mongoData(coll)
+		output = bb.mongoData()
 	} else {
 		// mysql
 		output = bb.data(y_field, x_field, from_date, to_date, avg, filter, chart_type, series, jsonp, order, limit, callback, combined, name, benchmark, decimal)
@@ -620,7 +620,7 @@ func (bb *Backendbauer) fieldSettings(field_type string, field_id int) varsType 
 
 // MongoDB
 // data
-func (bb *Backendbauer) mongoData() []Result {
+func (bb *Backendbauer) mongoData() string {
 	// db
 	db := bb.MGOconnect()
 	// collection
@@ -632,7 +632,11 @@ func (bb *Backendbauer) mongoData() []Result {
 		fmt.Println("query error")
 		panic(err)
 	}
-	return Results
+	var output string
+	for _, row := range rows {
+		output += row
+	}
+	return output
 }
 
 // connect to MongoDB
