@@ -388,6 +388,7 @@ var Backendbauer = function() {
 			}
 			// series
 			chart.addSeries({'name':data['y_field_name'],'data':data['data']});
+			chart.redraw();
 		},
 		// switch date format to Dutch
 		dateFormat:function(date) {
