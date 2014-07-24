@@ -168,6 +168,9 @@ var Backendbauer = function() {
 			to_date = Backendbauer.dateFormat(document.getElementById(to_field).value);
 			// highcharts options
 			options = {
+				credits: {
+					enabled:false	
+				},
 				chart: {
 					renderTo: div,
 					type: chart_type,

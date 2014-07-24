@@ -325,7 +325,8 @@ func request(w http.ResponseWriter, r *http.Request) {
 	output := ""
 	if mongo {
 		// mongo
-		output = bb.mongoData()
+		//output = bb.mongoData()
+		output = ""
 	} else {
 		// mysql
 		output = bb.data(y_field, x_field, from_date, to_date, avg, filter, chart_type, series, jsonp, order, limit, callback, combined, name, benchmark, decimal)
@@ -467,6 +468,12 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 	} else if x_field_settings.Type == "month" {
 		field_select = `DATE_FORMAT(` + x_field_settings.FieldName + `, "%m-%Y")`
 		field_group = `DATE_FORMAT(` + x_field_settings.FieldName + `, "%y-%m")`
+	} else if x_field_settings.Type == "week" {
+		field_select = `DATE_FORMAT(` + x_field_settings.FieldName + `, "%v")`
+		field_group = `DATE_FORMAT(` + x_field_settings.FieldName + `, "%v")`
+	} else if x_field_settings.Type == "day" {
+		field_select = `DATE_FORMAT(` + x_field_settings.FieldName + `, "%Y-%m-%d")`
+		field_group = `DATE_FORMAT(` + x_field_settings.FieldName + `, "%Y-%m-%d")`
 	} else {
 		field_select = x_field_settings.FieldName
 		field_group = x_field_settings.FieldName
@@ -619,6 +626,7 @@ func (bb *Backendbauer) fieldSettings(field_type string, field_id int) varsType 
 }
 
 // MongoDB
+/*
 // data
 func (bb *Backendbauer) mongoData() string {
 	// db
@@ -659,6 +667,7 @@ func (bb *Backendbauer) MGOconnect() *mgo.Database {
 	}
 	return db
 }
+*/
 
 // chart js
 func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
