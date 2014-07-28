@@ -273,17 +273,17 @@ var Backendbauer = function() {
 				global.title = title;
 			}
 			// custom subtitle
-			if (subtitle != undefined) {
+			if (typeof subtitle != "undefined") {
 				options.subtitle = subtitle;
 				global.subtitle = subtitle;
 			}
 			// custom legend
-			if (legend != undefined) {
+			if (typeof legend != "undefined") {
 				options.legend = legend;
 				global.legend = legend;
 			}
 			// custom events
-			if (events != undefined) {
+			if (typeof events != "undefined") {
 				options.events = events;
 				global.events = events;
 			}
