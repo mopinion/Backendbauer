@@ -49,7 +49,6 @@ var Backendbauer = function() {
 					var x = charts[i]['x'];
 					var chart_type = charts[i]['type'];
 					var colors = charts[i]['colors'];
-					var title = charts[i]['title'];
 					var order = charts[i]['order'];
 					var limit = charts[i]['limit'];
 					var series_last = series.length - 1;
@@ -65,6 +64,26 @@ var Backendbauer = function() {
 						var plotOptions;
 					} else {
 						var plotOptions = charts[i]['plotOptions'];
+					}
+					if (typeof charts[i]['events'] == "undefined") {
+						var events;
+					} else {
+						var events = charts[i]['events'];
+					}
+					if (typeof charts[i]['title'] == "undefined") {
+						var title;
+					} else {
+						var title = charts[i]['title'];
+					}
+					if (typeof charts[i]['subtitle'] == "undefined") {
+						var subtitle;
+					} else {
+						var subtitle = charts[i]['subtitle'];
+					}
+					if (typeof charts[i]['legend'] == "undefined") {
+						var legend;
+					} else {
+						var legend = charts[i]['legend'];
 					}
 					if (typeof charts[i]['xAxis'] == "undefined") {
 						var xAxis;
@@ -247,6 +266,26 @@ var Backendbauer = function() {
 			if (plotOptions != undefined) {
 				options.plotOptions = plotOptions;
 				global.plotOptions = plotOptions;
+			}
+			// custom title
+			if (title != undefined) {
+				options.title = title;
+				global.title = title;
+			}
+			// custom subtitle
+			if (subtitle != undefined) {
+				options.subtitle = subtitle;
+				global.subtitle = subtitle;
+			}
+			// custom legend
+			if (legend != undefined) {
+				options.legend = legend;
+				global.legend = legend;
+			}
+			// custom events
+			if (events != undefined) {
+				options.events = events;
+				global.events = events;
 			}
 			// custom xAxis
 			if (xAxis != undefined) {
