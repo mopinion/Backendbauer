@@ -115,7 +115,7 @@ var Backendbauer = function() {
 							var set_series = 1;
 						}
 						if (set_series == 0) {
-							Backendbauer.chart(x,y,chart_type,avg,colors,title,set_series,set_filters,order,limit,name,benchmark,plotOptions,xAxis,decimal);
+							Backendbauer.chart(x,y,chart_type,avg,colors,title,set_series,set_filters,order,limit,name,benchmark,plotOptions,xAxis,events,subtitle,legend,decimal);
 						} else {
 							Backendbauer.series(x,y,chart_type,avg,colors,title,set_series,set_filters,order,limit,name,benchmark,decimal);
 						}
@@ -130,7 +130,7 @@ var Backendbauer = function() {
 			Backendbauer.render(chart_id);
 		},
 		// get data
-		chart:function(set_x,set_y,set_chart_type,set_avg,set_colors,set_title,set_series,set_filters,set_order,set_limit,set_name,set_benchmark,plotOptions,xAxis,set_decimal) {
+		chart:function(set_x,set_y,set_chart_type,set_avg,set_colors,set_title,set_series,set_filters,set_order,set_limit,set_name,set_benchmark,plotOptions,xAxis,events,title,subtitle,legend,set_decimal) {
 			// vars
 			if (set_x == undefined) {
 				set_x = 1;
