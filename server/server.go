@@ -385,7 +385,7 @@ func (bb *Backendbauer) data(y_field int, x_field int, from_date string, to_date
 	}
 	// show x-axis labels?
 	var x_labels string
-	if len(rows) <= bb.max_items {
+	if len(rows) <= bb.max_items && len(rows) > 1 {
 		x_labels = `,"x_labels":true`
 	} else {
 		x_labels = `,"x_labels":false`
