@@ -452,6 +452,12 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 		} else {
 			y_field_filter = `WHERE ` + y_field_settings.FieldName + ` > 0`
 		}
+	} else if y_field_settings.Type == "nps" {
+		if len(table.FindAllString(y_field_settings.FieldName, -1)) == 0 && len(table.FindAllString(bb.mysql_table, -1)) == 0 {
+			y_field_filter = `WHERE ` + bb.mysql_table + `.` + y_field_settings.FieldName + ` >= 0`
+		} else {
+			y_field_filter = `WHERE ` + y_field_settings.FieldName + ` >= 0`
+		}
 	} else {
 		if len(table.FindAllString(y_field_settings.FieldName, -1)) == 0 && len(table.FindAllString(bb.mysql_table, -1)) == 0 {
 			y_field_filter = `WHERE ` + bb.mysql_table + `.` + y_field_settings.FieldName + ` <> ""`
@@ -502,7 +508,7 @@ func (bb *Backendbauer) connect(y_field int, x_field int, from_date string, to_d
 	if benchmark != 0 {
 		// benchmark
 		var1 = `'` + strconv.Itoa(benchmark) + `'`
-	} else if y_field_settings.Type == "custom" {
+	} else if y_field_settings.Type == "custom" || y_field_settings.Type == "nps" {
 		// custom y field query
 		var1 = y_field_settings.Select
 	} else if avg == 1 && y_field_settings.Type == "ratio" {
