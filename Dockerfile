@@ -38,4 +38,4 @@ EXPOSE 81
 RUN cd $BB_PATH
 
 # CMD ['nohup','/var/www/backendbauer_efm/server','8181','&']
-CMD $BB_PATH/server 81
+CMD $BB_PATH/server/server 81
