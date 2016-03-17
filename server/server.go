@@ -133,7 +133,7 @@ func main() {
 		bb.path = "/var/www/backendbauer/server/"
 	} else {
 		// local test path
-		bb.path = "./"
+		bb.path = "/var/www/backendbauer/server/"
 	}
 	if bb.path == "" {
 		_, filename, _, _ := runtime.Caller(1)
@@ -188,7 +188,7 @@ func main() {
 	http.ListenAndServe(":"+port, nil)
 }
 
-// authentication 
+// authentication
 func password(user, realm string) string {
 	bb := new(Backendbauer)
 	settings := bb.settings()
@@ -288,7 +288,7 @@ func request(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
 	w.Header().Set("Content-Type", "application/x-javascript")
 	fmt.Println("Backendbauer server running")
-	// check referer domain 
+	// check referer domain
 	referer := r.Referer()
 	bb.referer = referer
 	// server settings
@@ -759,8 +759,8 @@ func (bb *Backendbauer) chart(w http.ResponseWriter, r *http.Request) {
 							}
 						]
 					};
-    				var bb = document.createElement('script'); 
-    				bb.type = 'text/javascript'; 
+    				var bb = document.createElement('script');
+    				bb.type = 'text/javascript';
     				bb.id = 'backendbauer';
     				bb.async = true;
     				bb.src = document.location.protocol + '//' + document.location.host + '/backendbauer.js';
