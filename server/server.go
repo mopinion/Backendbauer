@@ -203,6 +203,7 @@ func password(user, realm string) string {
 
 // load json
 func (bb *Backendbauer) settings() jsonobject {
+	fmt.Println("bb.path:",bb.path)
 	file, err := ioutil.ReadFile(bb.path + "config.json")
 	if err != nil {
 		panic(err)
