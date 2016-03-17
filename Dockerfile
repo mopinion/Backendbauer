@@ -26,6 +26,9 @@ RUN go get github.com/abbot/go-http-auth
 # RUN cd $GOPATH/src/golang.org/x/
 # RUN git clone git@github.com:golang/crypto.git
 
+# vim
+RUN apt-get install vim -y
+
 # files
 ADD ./ $BB_PATH
 RUN cd $BB_PATH
